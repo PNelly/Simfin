@@ -1,0 +1,1797 @@
+array(4) {
+  ["calculationScheme"]=>
+  array(0) {
+  }
+  ["calculated"]=>
+  bool(false)
+  ["industryTemplate"]=>
+  string(7) "general"
+  ["values"]=>
+  array(85) {
+    [0]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "1"
+      ["uid"]=>
+      string(1) "1"
+      ["standardisedName"]=>
+      string(47) "Cash, Cash Equivalents & Short Term Investments"
+      ["parent_tid"]=>
+      string(2) "21"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(86427000000)
+      ["valueChosen"]=>
+      int(86427000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [1]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "2"
+      ["uid"]=>
+      string(1) "2"
+      ["standardisedName"]=>
+      string(23) "Cash & Cash Equivalents"
+      ["parent_tid"]=>
+      string(1) "1"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "44771000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "44771000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [2]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "3"
+      ["uid"]=>
+      string(1) "3"
+      ["standardisedName"]=>
+      string(22) "Short Term Investments"
+      ["parent_tid"]=>
+      string(1) "1"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "41656000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "41656000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [3]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "4"
+      ["uid"]=>
+      string(1) "4"
+      ["standardisedName"]=>
+      string(27) "Accounts & Notes Receivable"
+      ["parent_tid"]=>
+      string(2) "21"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(18077000000)
+      ["valueChosen"]=>
+      int(18077000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [4]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "5"
+      ["uid"]=>
+      string(1) "5"
+      ["standardisedName"]=>
+      string(24) "Accounts Receivable, Net"
+      ["parent_tid"]=>
+      string(1) "4"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "18077000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "18077000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [5]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "6"
+      ["uid"]=>
+      string(1) "6"
+      ["standardisedName"]=>
+      string(21) "Notes Receivable, Net"
+      ["parent_tid"]=>
+      string(1) "4"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [6]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "7"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(17) "Unbilled Revenues"
+      ["parent_tid"]=>
+      string(2) "21"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [7]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "8"
+      ["uid"]=>
+      string(1) "8"
+      ["standardisedName"]=>
+      string(11) "Inventories"
+      ["parent_tid"]=>
+      string(2) "21"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(10) "4988000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(10) "4988000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [8]=>
+    array(9) {
+      ["tid"]=>
+      string(1) "9"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(13) "Raw Materials"
+      ["parent_tid"]=>
+      string(1) "8"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [9]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "10"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(15) "Work In Process"
+      ["parent_tid"]=>
+      string(1) "8"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [10]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "11"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(14) "Finished Goods"
+      ["parent_tid"]=>
+      string(1) "8"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [11]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "12"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(15) "Other Inventory"
+      ["parent_tid"]=>
+      string(1) "8"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [12]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "13"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(23) "Other Short Term Assets"
+      ["parent_tid"]=>
+      string(2) "21"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(31336000000)
+      ["valueChosen"]=>
+      int(31336000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [13]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "14"
+      ["uid"]=>
+      string(2) "14"
+      ["standardisedName"]=>
+      string(16) "Prepaid Expenses"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [14]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "15"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(27) "Derivative & Hedging Assets"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [15]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "16"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(20) "Assets Held-for-Sale"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [16]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "17"
+      ["uid"]=>
+      string(2) "17"
+      ["standardisedName"]=>
+      string(19) "Deferred Tax Assets"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [17]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "18"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(23) "Income Taxes Receivable"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [18]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "19"
+      ["uid"]=>
+      string(2) "19"
+      ["standardisedName"]=>
+      string(23) "Discontinued Operations"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [19]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "20"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(31) "Miscellaneous Short Term Assets"
+      ["parent_tid"]=>
+      string(2) "13"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "31336000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "31336000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [20]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "21"
+      ["uid"]=>
+      string(2) "21"
+      ["standardisedName"]=>
+      string(20) "Total Current Assets"
+      ["parent_tid"]=>
+      string(2) "41"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "140828000000"
+      ["valueCalculated"]=>
+      int(140828000000)
+      ["valueChosen"]=>
+      int(140828000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [21]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "22"
+      ["uid"]=>
+      string(2) "22"
+      ["standardisedName"]=>
+      string(32) "Property, Plant & Equipment, Net"
+      ["parent_tid"]=>
+      string(2) "40"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(11) "39597000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "39597000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [22]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "23"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(27) "Property, Plant & Equipment"
+      ["parent_tid"]=>
+      string(2) "22"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [23]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "24"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(24) "Accumulated Depreciation"
+      ["parent_tid"]=>
+      string(2) "22"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [24]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "25"
+      ["uid"]=>
+      string(2) "25"
+      ["standardisedName"]=>
+      string(35) "Long Term Investments & Receivables"
+      ["parent_tid"]=>
+      string(2) "40"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(158608000000)
+      ["valueChosen"]=>
+      int(158608000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [25]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "26"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(21) "Long Term Investments"
+      ["parent_tid"]=>
+      string(2) "25"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [26]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "27"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(31) "Long Term Marketable Securities"
+      ["parent_tid"]=>
+      string(2) "25"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(12) "158608000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(12) "158608000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [27]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "28"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(21) "Long Term Receivables"
+      ["parent_tid"]=>
+      string(2) "25"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [28]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "29"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(22) "Other Long Term Assets"
+      ["parent_tid"]=>
+      string(2) "40"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(34686000000)
+      ["valueChosen"]=>
+      int(34686000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [29]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "30"
+      ["uid"]=>
+      string(2) "30"
+      ["standardisedName"]=>
+      string(17) "Intangible Assets"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [30]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "31"
+      ["uid"]=>
+      string(2) "31"
+      ["standardisedName"]=>
+      string(8) "Goodwill"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [31]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "32"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(23) "Other Intangible Assets"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [32]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "33"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(15) "Prepaid Expense"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [33]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "34"
+      ["uid"]=>
+      string(2) "34"
+      ["standardisedName"]=>
+      string(19) "Deferred Tax Assets"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [34]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "35"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(27) "Derivative & Hedging Assets"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [35]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "36"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(21) "Prepaid Pension Costs"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [36]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "37"
+      ["uid"]=>
+      string(2) "37"
+      ["standardisedName"]=>
+      string(23) "Discontinued Operations"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [37]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "38"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(25) "Investments in Affiliates"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [38]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "39"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(30) "Miscellaneous Long Term Assets"
+      ["parent_tid"]=>
+      string(2) "29"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "34686000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "34686000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [39]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "40"
+      ["uid"]=>
+      string(2) "40"
+      ["standardisedName"]=>
+      string(23) "Total Noncurrent Assets"
+      ["parent_tid"]=>
+      string(2) "41"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "232891000000"
+      ["valueCalculated"]=>
+      int(232891000000)
+      ["valueChosen"]=>
+      int(232891000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [40]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "41"
+      ["uid"]=>
+      string(2) "41"
+      ["standardisedName"]=>
+      string(12) "Total Assets"
+      ["parent_tid"]=>
+      string(1) "0"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "373719000000"
+      ["valueCalculated"]=>
+      int(373719000000)
+      ["valueChosen"]=>
+      int(373719000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [41]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "42"
+      ["uid"]=>
+      string(2) "42"
+      ["standardisedName"]=>
+      string(19) "Payables & Accruals"
+      ["parent_tid"]=>
+      string(2) "57"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(44293000000)
+      ["valueChosen"]=>
+      int(44293000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [42]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "43"
+      ["uid"]=>
+      string(2) "43"
+      ["standardisedName"]=>
+      string(16) "Accounts Payable"
+      ["parent_tid"]=>
+      string(2) "42"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "44293000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "44293000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [43]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "44"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(13) "Accrued Taxes"
+      ["parent_tid"]=>
+      string(2) "42"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [44]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "45"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(28) "Interest & Dividends Payable"
+      ["parent_tid"]=>
+      string(2) "42"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [45]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "46"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(25) "Other Payables & Accruals"
+      ["parent_tid"]=>
+      string(2) "42"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [46]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "47"
+      ["uid"]=>
+      string(2) "47"
+      ["standardisedName"]=>
+      string(15) "Short Term Debt"
+      ["parent_tid"]=>
+      string(2) "57"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(21741000000)
+      ["valueChosen"]=>
+      int(21741000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [47]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "48"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(21) "Short Term Borrowings"
+      ["parent_tid"]=>
+      string(2) "47"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "11969000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "11969000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [48]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "49"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(25) "Short Term Capital Leases"
+      ["parent_tid"]=>
+      string(2) "47"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [49]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "50"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(33) "Current Portion of Long Term Debt"
+      ["parent_tid"]=>
+      string(2) "47"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(10) "9772000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(10) "9772000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [50]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "51"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(28) "Other Short Term Liabilities"
+      ["parent_tid"]=>
+      string(2) "57"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(42249000000)
+      ["valueChosen"]=>
+      int(42249000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [51]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "52"
+      ["uid"]=>
+      string(2) "52"
+      ["standardisedName"]=>
+      string(16) "Deferred Revenue"
+      ["parent_tid"]=>
+      string(2) "51"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(10) "5546000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(10) "5546000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [52]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "53"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(21) "Derivatives & Hedging"
+      ["parent_tid"]=>
+      string(2) "51"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [53]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "54"
+      ["uid"]=>
+      string(2) "54"
+      ["standardisedName"]=>
+      string(24) "Deferred Tax Liabilities"
+      ["parent_tid"]=>
+      string(2) "51"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [54]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "55"
+      ["uid"]=>
+      string(2) "55"
+      ["standardisedName"]=>
+      string(23) "Discontinued Operations"
+      ["parent_tid"]=>
+      string(2) "51"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [55]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "56"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(36) "Miscellaneous Short Term Liabilities"
+      ["parent_tid"]=>
+      string(2) "51"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "36703000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "36703000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [56]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "57"
+      ["uid"]=>
+      string(2) "57"
+      ["standardisedName"]=>
+      string(25) "Total Current Liabilities"
+      ["parent_tid"]=>
+      string(2) "73"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "108283000000"
+      ["valueCalculated"]=>
+      int(108283000000)
+      ["valueChosen"]=>
+      int(108283000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [57]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "58"
+      ["uid"]=>
+      string(2) "58"
+      ["standardisedName"]=>
+      string(14) "Long Term Debt"
+      ["parent_tid"]=>
+      string(2) "72"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(11) "92989000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "92989000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [58]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "59"
+      ["uid"]=>
+      string(2) "59"
+      ["standardisedName"]=>
+      string(20) "Long Term Borrowings"
+      ["parent_tid"]=>
+      string(2) "58"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [59]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "60"
+      ["uid"]=>
+      string(2) "60"
+      ["standardisedName"]=>
+      string(24) "Long Term Capital Leases"
+      ["parent_tid"]=>
+      string(2) "58"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [60]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "61"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(27) "Other Long Term Liabilities"
+      ["parent_tid"]=>
+      string(2) "72"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(54555000000)
+      ["valueChosen"]=>
+      int(54555000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [61]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "62"
+      ["uid"]=>
+      string(2) "62"
+      ["standardisedName"]=>
+      string(19) "Accrued Liabilities"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [62]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "63"
+      ["uid"]=>
+      string(2) "63"
+      ["standardisedName"]=>
+      string(19) "Pension Liabilities"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [63]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "64"
+      ["uid"]=>
+      string(2) "64"
+      ["standardisedName"]=>
+      string(8) "Pensions"
+      ["parent_tid"]=>
+      string(2) "63"
+      ["displayLevel"]=>
+      string(1) "2"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [64]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "65"
+      ["uid"]=>
+      string(2) "65"
+      ["standardisedName"]=>
+      string(30) "Other Post-Retirement Benefits"
+      ["parent_tid"]=>
+      string(2) "63"
+      ["displayLevel"]=>
+      string(1) "2"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [65]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "66"
+      ["uid"]=>
+      string(2) "66"
+      ["standardisedName"]=>
+      string(21) "Deferred Compensation"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [66]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "67"
+      ["uid"]=>
+      string(2) "67"
+      ["standardisedName"]=>
+      string(16) "Deferred Revenue"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [67]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "68"
+      ["uid"]=>
+      string(2) "68"
+      ["standardisedName"]=>
+      string(24) "Deferred Tax Liabilities"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [68]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "69"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(21) "Derivatives & Hedging"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [69]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "70"
+      ["uid"]=>
+      string(2) "70"
+      ["standardisedName"]=>
+      string(23) "Discontinued Operations"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [70]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "71"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(35) "Miscellaneous Long Term Liabilities"
+      ["parent_tid"]=>
+      string(2) "61"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "54555000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "54555000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [71]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "72"
+      ["uid"]=>
+      string(2) "72"
+      ["standardisedName"]=>
+      string(28) "Total Noncurrent Liabilities"
+      ["parent_tid"]=>
+      string(2) "73"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "147544000000"
+      ["valueCalculated"]=>
+      int(147544000000)
+      ["valueChosen"]=>
+      int(147544000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [72]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "73"
+      ["uid"]=>
+      string(2) "73"
+      ["standardisedName"]=>
+      string(17) "Total Liabilities"
+      ["parent_tid"]=>
+      string(2) "85"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "255827000000"
+      ["valueCalculated"]=>
+      int(255827000000)
+      ["valueChosen"]=>
+      int(255827000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [73]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "74"
+      ["uid"]=>
+      string(2) "74"
+      ["standardisedName"]=>
+      string(16) "Preferred Equity"
+      ["parent_tid"]=>
+      string(2) "82"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [74]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "75"
+      ["uid"]=>
+      string(2) "75"
+      ["standardisedName"]=>
+      string(42) "Share Capital & Additional Paid-In Capital"
+      ["parent_tid"]=>
+      string(2) "82"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(40970000000)
+      ["valueChosen"]=>
+      int(40970000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [75]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "76"
+      ["uid"]=>
+      string(2) "76"
+      ["standardisedName"]=>
+      string(12) "Common Stock"
+      ["parent_tid"]=>
+      string(2) "75"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      string(11) "40970000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "40970000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [76]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "77"
+      ["uid"]=>
+      string(2) "77"
+      ["standardisedName"]=>
+      string(26) "Additional Paid in Capital"
+      ["parent_tid"]=>
+      string(2) "75"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [77]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "78"
+      ["uid"]=>
+      string(1) "0"
+      ["standardisedName"]=>
+      string(19) "Other Share Capital"
+      ["parent_tid"]=>
+      string(2) "75"
+      ["displayLevel"]=>
+      string(1) "1"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [78]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "79"
+      ["uid"]=>
+      string(2) "79"
+      ["standardisedName"]=>
+      string(14) "Treasury Stock"
+      ["parent_tid"]=>
+      string(2) "82"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [79]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "80"
+      ["uid"]=>
+      string(2) "80"
+      ["standardisedName"]=>
+      string(17) "Retained Earnings"
+      ["parent_tid"]=>
+      string(2) "82"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(11) "80510000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "80510000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [80]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "81"
+      ["uid"]=>
+      string(2) "81"
+      ["standardisedName"]=>
+      string(12) "Other Equity"
+      ["parent_tid"]=>
+      string(2) "82"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(11) "-3588000000"
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      string(11) "-3588000000"
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [81]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "82"
+      ["uid"]=>
+      string(2) "82"
+      ["standardisedName"]=>
+      string(31) "Equity Before Minority Interest"
+      ["parent_tid"]=>
+      string(2) "84"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(117892000000)
+      ["valueChosen"]=>
+      int(117892000000)
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [82]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "83"
+      ["uid"]=>
+      string(2) "83"
+      ["standardisedName"]=>
+      string(17) "Minority Interest"
+      ["parent_tid"]=>
+      string(2) "84"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      NULL
+      ["valueCalculated"]=>
+      int(0)
+      ["valueChosen"]=>
+      NULL
+      ["checkPossible"]=>
+      bool(false)
+    }
+    [83]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "84"
+      ["uid"]=>
+      string(2) "84"
+      ["standardisedName"]=>
+      string(12) "Total Equity"
+      ["parent_tid"]=>
+      string(2) "85"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "117892000000"
+      ["valueCalculated"]=>
+      int(117892000000)
+      ["valueChosen"]=>
+      int(117892000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+    [84]=>
+    array(9) {
+      ["tid"]=>
+      string(2) "85"
+      ["uid"]=>
+      string(2) "85"
+      ["standardisedName"]=>
+      string(26) "Total Liabilities & Equity"
+      ["parent_tid"]=>
+      string(1) "0"
+      ["displayLevel"]=>
+      string(1) "0"
+      ["valueAssigned"]=>
+      string(12) "373719000000"
+      ["valueCalculated"]=>
+      int(373719000000)
+      ["valueChosen"]=>
+      int(373719000000)
+      ["checkPossible"]=>
+      bool(true)
+    }
+  }
+}
