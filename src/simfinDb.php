@@ -24,6 +24,12 @@ define("KEY_SECTOR_NAME", 	"sectorName");
 define("KEY_SECTOR_CODE", 	"sectorCode");
 define("KEY_TICKER", 		"ticker");
 define("KEY_ENTITY_NAME", 	"name");
+define("KEY_SHRCLS_NAME", 	"shareClassName");
+define("KEY_SHRCLS_TYPE", 	"shareClassType");
+define("KEY_PRICE_DATA", 	"priceData");
+define("KEY_PRICE_DATE", 	"date");
+define("KEY_CLOSE_ADJ", 	"closeAdj");
+define("KEY_SPLIT_COEF", 	"splitCoef");
 
 define("TBL_STMT_META", 	"STD_STATEMENT_META");
 define("TBL_SCHEMES", 		"STD_STATEMENT_CALCULATION_SCHEMES");
@@ -35,6 +41,9 @@ define("TBL_VAL_TYPES", 	"STD_STATEMENT_VALUE_NAMES");
 define("TBL_ENTITIES", 		"ENTITIES");
 define("TBL_SECTOR", 		"STD_SECTORS");
 define("TBL_INDUSTRY", 		"STD_INDUSTRIES");
+define("TBL_SHRCLS_TYPES", 	"SHARE_CLASS_TYPES");
+define("TBL_SHRCLS_NAMES", 	"SHARE_CLASS_NAMES");
+define("TBL_PRICES", 		"PRIMARY_SHARE_CLASS_PRICES");
 
 define("COL_STMT_ID", 		"STD_STATEMENT_ID");
 define("COL_SIMFIN_ID", 	"SIMFIN_ID");
@@ -65,6 +74,14 @@ define("COL_FYEAR_END", 	"FYEAR_MONTH_ENDING");
 define("COL_EMPLOYEES", 	"EMPLOYEES");
 define("COL_TICKER", 		"TICKER");
 define("COL_ENTITY_NAME", 	"NAME");
+define("COL_PRIMARY_SHRCLS","PRIMARY_SHARE_CLASS_ID");
+define("COL_SHRCLS_TYPE_ID","CLASS_TYPE_ID");
+define("COL_SHRCLS_TYPE_NM","CLASS_TYPE_NAME");
+define("COL_SHRCLS_NAME_ID","CLASS_NAME_ID");
+define("COL_SHRCLS_NAME", 	"CLASS_NAME");
+define("COL_PRICE_DATE", 	"CLOSING_DATE");
+define("COL_PRICE", 		"CLOSING_PRICE");
+define("COL_SPLIT_COEF", 	"SPLIT_COEFFICIENT");
 
 define("SQL_TRUE", 			"TRUE");
 define("SQL_FALSE", 		"FALSE");
@@ -423,6 +440,70 @@ function getStatementValueNameId($db, $name){
 			: SQL_NULL;
 }
 
+function getShareClassTypeId($db, $type){
+
+	$type = $db->real_escape_string($type);
+
+	$sql  = "SELECT ".COL_SHRCLS_TYPE_ID." ";
+	$sql .= "FROM ".TBL_SHRCLS_TYPES." ";
+	$sql .= "WHERE ".COL_SHRCLS_TYPE_NM." = ";
+	$sql .= "'".$type."';";
+
+	$result = $db->query($sql);
+
+	if($result->num_rows > 0)
+		return (($result->fetch_row())[0]);
+
+	$sql  = "INSERT INTO ".TBL_SHRCLS_TYPES." ";
+	$sql .= "(".COL_SHRCLS_TYPE_NM.") ";
+	$sql .= "VALUES ('".$type."');";
+
+	if($db->query($sql) !== true){
+
+		echo("\nCould not insert share class type, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+
+		return SQL_NULL;
+	}
+
+	return  ( $db->insert_id > 0)
+			? $db->insert_id
+			: SQL_NULL;
+}
+
+function getShareClassNameId($db, $name, $typeId){
+
+	$name = $db->real_escape_string($name);
+
+	$sql  = "SELECT ".COL_SHRCLS_NAME_ID." ";
+	$sql .= "FROM ".TBL_SHRCLS_NAMES." ";
+	$sql .= "WHERE ".COL_SHRCLS_NAME." = ";
+	$sql .= "'".$name."';";
+
+	$result = $db->query($sql);
+
+	if($result->num_rows > 0)
+		return (($result->fetch_row())[0]);
+
+	$sql  = "INSERT INTO ".TBL_SHRCLS_NAMES." ";
+	$sql .= "(".COL_SHRCLS_NAME.", ".COL_SHRCLS_TYPE_ID.") ";
+	$sql .= "VALUES ('".$name."', ".$typeId.");";
+
+	if($db->query($sql) !== true){
+
+		echo("\nCoult not insert share class name, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+
+		return SQL_NULL;
+	}
+
+	return  ( $db->insert_id > 0)
+			? $db->insert_id
+			: SQL_NULL;
+}
+
 function statementMetaExists($db, $simfinId, $type, $fyear, $period){
 
 	$typeId 	= getStatementTypeId($db, $type);
@@ -438,6 +519,37 @@ function statementMetaExists($db, $simfinId, $type, $fyear, $period){
 	$result = $db->query($sql);
 
 	return ($result->num_rows > 0);
+}
+
+function updateEntityShareClass($db, $simfinId, $shareClassId){
+
+	$sql  = "UPDATE ".TBL_ENTITIES." SET ";
+	$sql .= COL_PRIMARY_SHRCLS." = ".$shareClassId." ";
+	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simfinId.";";
+
+	if($db->query($sql) !== true){
+		echo("could not update entity, statement:\n");
+		echo($sql."\n");
+		echo($db->error."\n");
+	}
+}
+
+function insertPricePoint($db, $simfinId, $date, $price, $coeff){
+
+	$date = $db->real_escape_string($date);
+
+	$sql  = "INSERT INTO ".TBL_PRICES." (";
+	$sql .= COL_SIMFIN_ID.", ".COL_PRICE_DATE.", ";
+	$sql .= COL_PRICE.", ".COL_SPLIT_COEF.") ";
+	$sql .= "VALUES (".$simfinId.", '".$date."', ";
+	$sql .= $price.", ".$coeff.");";
+
+	if($db->query($sql) !== true){
+
+		echo("\nCould not insert price point, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+	}
 }
 
 ?>
