@@ -1,8 +1,55 @@
 <?php
 
+error_reporting(E_STRICT);
+
 define("DUPLICATE_ENTRY", 	1062);
 define("HTTP_SUCCESS", 		200);
 define("TRAILING_TWELVE", 	"TTM");
+
+define("SEC_IND", 			"Industrials");
+define("SEC_TECH" ,			"Technology");
+define("SEC_CON_DEF", 		"Consumer Defensive");
+define("SEC_CON_CYC", 		"Consumer Cyclical");
+define("SEC_FIN_SER", 		"Financial Services");
+define("SEC_UTL", 			"Utilities");
+define("SEC_HEALTH", 		"Healthcare");
+define("SEC_ENG", 			"Energy");
+define("SEC_BUS_SER", 		"Business Services");
+define("SEC_RLST", 			"Real Estate");
+define("SEC_BSCMAT", 		"Basic Materials");
+define("SEC_OTR", 			"Other");
+define("SEC_COMM_SER", 		"Communication Services");
+
+define("SEC_IND_CODE", 		100);
+define("SEC_TECH_CODE", 	101);
+define("SEC_CON_DEF_CODE", 	102);
+define("SEC_CON_CYC_CODE", 	103);
+define("SEC_FIN_SER_CODE", 	104);
+define("SEC_UTL_CODE", 		105);
+define("SEC_HEALTH_CODE", 	106);
+define("SEC_ENG_CODE", 		107);
+define("SEC_BUS_SER_CODE", 	108);
+define("SEC_RLST_CODE", 	109);
+define("SEC_BSCMAT_CODE", 	110);
+define("SEC_OTR_CODE", 		111);
+define("SEC_COMM_SER_CODE", 112);
+
+$__SECTORS = array(
+
+	SEC_IND_CODE 		=> 	SEC_IND,
+	SEC_TECH_CODE 		=> 	SEC_TECH,
+	SEC_CON_DEF_CODE 	=> 	SEC_CON_DEF,
+	SEC_CON_CYC_CODE 	=> 	SEC_CON_CYC,
+	SEC_FIN_SER_CODE 	=> 	SEC_FIN_SER,
+	SEC_UTL_CODE	 	=> 	SEC_UTL,
+	SEC_HEALTH_CODE 	=> 	SEC_HEALTH,
+	SEC_ENG_CODE 		=> 	SEC_ENG,
+	SEC_BUS_SER_CODE 	=> 	SEC_BUS_SER,
+	SEC_RLST_CODE 		=> 	SEC_RLST,
+	SEC_BSCMAT_CODE 	=> 	SEC_BSCMAT,
+	SEC_OTR_CODE 		=> 	SEC_OTR,
+	SEC_COMM_SER_CODE 	=> 	SEC_COMM_SER
+);
 
 define("KEY_PERIOD", 		"period");
 define("KEY_FYEAR", 		"fyear");
@@ -87,6 +134,39 @@ define("SQL_TRUE", 			"TRUE");
 define("SQL_FALSE", 		"FALSE");
 define("SQL_NULL", 			"NULL");
 
+function insertEntity($db, $simfinId, $ticker, $name){
+
+	$ticker = $db->real_escape_string($ticker);
+	$name 	= $db->real_escape_string($name);
+
+	$sql  = "REPLACE INTO ".TBL_ENTITIES." ";
+	$sql .= "(".COL_SIMFIN_ID.", ".COL_TICKER.", ";
+	$sql .= COL_ENTITY_NAME.") VALUES ( ";
+	$sql .= $simfinId.", '".$ticker."', '".$name."' );";
+
+	if($db->query($sql) !== true){
+		echo("\nCould not insert entity, statement:\n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+	}
+}
+
+function updateEntity($db, $simId, $fye, $emp, $secId, $indId){
+
+	$sql  = "UPDATE ".TBL_ENTITIES." SET ";
+	$sql .= COL_FYEAR_END." = ".$fye.", ";
+	$sql .= COL_EMPLOYEES." = ".$emp.", ";
+	$sql .= COL_SECTOR_ID." = ".$secId.", ";
+	$sql .= COL_INDUSTRY_ID." = ".$indId." ";
+	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simId.";";
+
+	if($db->query($sql) !== true){
+		echo("could not update entity, statement: \n");
+		echo($sql."\n");
+		echo($db->error."\n");
+	}
+}
+
 function sectorCodeFromIndustryCode($industryCode){
 
 	return (int) substr( (string) $industryCode, 0, 3);
@@ -96,27 +176,12 @@ function sectorNameFromIndustryCode($industryCode){
 
 	$sectorCode = sectorCodeFromIndustryCode($industryCode);
 
-	switch($sectorCode){
-
-		case 100: return "Industrials";
-		case 101: return "Technology";
-		case 102: return "Consumer Defensive";
-		case 103: return "Consumer Cyclical";
-		case 104: return "Financial Services";
-		case 105: return "Utilities";
-		case 106: return "Healthcare";
-		case 107: return "Energy";
-		case 108: return "Business Services";
-		case 109: return "Real Estate";
-		case 110: return "Basic Materials";
-		case 111: return "Other";
-		case 112: return "Communication Services";
-	}
-
-	return null;
+	return $__SECTORS[$sectorCode];
 }
 
 function getSectorId($db, $sectorCode, $sectorName){
+
+	$sectorName = $db->real_escape_string($sectorName);
 
 	$sql  = "SELECT ".COL_SECTOR_ID." "; 
 	$sql .= "FROM ".TBL_SECTOR." ";
@@ -141,6 +206,8 @@ function getSectorId($db, $sectorCode, $sectorName){
 }
 
 function getIndustryId($db, $industryCode, $industryName){
+
+	$industryName = $db->real_escape_string($industryName);
 
 	$sql  = "SELECT ".COL_INDUSTRY_ID." ";
 	$sql .= "FROM ".TBL_INDUSTRY." ";
@@ -232,13 +299,13 @@ function insertCalculationScheme($db, $statementId, $scheme){
 
 		$periodId = getPeriodId($db, $pd);
 
-		$sql  = "INSERT INTO ".TBL_SCHEMES." ";
+		$sql  = "REPLACE INTO ".TBL_SCHEMES." ";
 		$sql .= "(".COL_STMT_ID.", ".COL_FYEAR.", ";
 		$sql .= COL_PERIOD_ID.", ".COL_SIGN.") ";
 		$sql .= " VALUES (".$statementId.", ";
 		$sql .= $fy.", ".$periodId.", ".$sn.");";
 
-		if($db->query($sql) !== true && $db->errno != DUPLICATE_ENTRY){
+		if($db->query($sql) !== true){
 			echo("\nCould not insert calulation scheme element, statement: \n");
 			echo($sql."\n");
 			echo(($db->error)."\n");
@@ -290,7 +357,7 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 
 		if($value != null){
 
-			$sql  = "INSERT INTO ".TBL_VALUES." ";
+			$sql  = "REPLACE INTO ".TBL_VALUES." ";
 			$sql .= "(".COL_STMT_ID.", ".COL_TID.", ";
 			$sql .= COL_UID.", ".COL_NAME_ID.", ";
 			$sql .= COL_PARENT_ID.", ".COL_DISPLAY.", ";
@@ -300,13 +367,11 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 			$sql .= $parentId.", ".$display.", ";
 			$sql .= $value.");";
 
-			if($db->query($sql) !== true && $db->errno != DUPLICATE_ENTRY){
+			if($db->query($sql) !== true){
 
 				echo("\nCould not insert line item, statement: \n");
 				echo($sql."\n");
 				echo(($db->errno).": ".($db->error)."\n");
-				echo("line item: \n");
-				var_dump($lineItem);
 			}
 		}
 	}
@@ -404,7 +469,7 @@ function getPeriodId($db, $period){
 	}
 
 	return 	( $db->insert_id > 0)
-			? $db->inesrt_id 
+			? $db->insert_id 
 			: SQL_NULL;	
 }
 
@@ -538,13 +603,13 @@ function insertPricePoint($db, $simfinId, $date, $price, $coeff){
 
 	$date = $db->real_escape_string($date);
 
-	$sql  = "INSERT INTO ".TBL_PRICES." (";
+	$sql  = "REPLACE INTO ".TBL_PRICES." (";
 	$sql .= COL_SIMFIN_ID.", ".COL_PRICE_DATE.", ";
 	$sql .= COL_PRICE.", ".COL_SPLIT_COEF.") ";
 	$sql .= "VALUES (".$simfinId.", '".$date."', ";
 	$sql .= $price.", ".$coeff.");";
 
-	if($db->query($sql) !== true && $db->errno != DUPLICATE_ENTRY){
+	if($db->query($sql) !== true){
 
 		echo("\nCould not insert price point, statement: \n");
 		echo($sql."\n");
@@ -554,7 +619,9 @@ function insertPricePoint($db, $simfinId, $date, $price, $coeff){
 
 function getEntityIds($db){
 
-	$sql = "SELECT ".COL_SIMFIN_ID." FROM ".TBL_ENTITIES.";";
+	$sql  = "SELECT ".COL_SIMFIN_ID." ";
+	$sql .= "FROM ".TBL_ENTITIES." ";
+	$sql .= "ORDER BY ".COL_SIMFIN_ID." ASC;";
 
 	$result = $db->query($sql);
 

@@ -7,7 +7,7 @@ require_once("simfinCreds.php");
 // begin script //
 
 $entitiesProcessed 	= 0;
-$entityLimit 	 	= 1;
+$entityLimit 	 	= 5;
 
 $db 	= new mysqli($server, $user, $pass, $usedb);
 
@@ -56,7 +56,7 @@ for($idx = 0; $idx < count($ids); ++$idx){
 
 					continue;
 				}
-
+				
 			break;
 
 			case KEY_SHRCLS_NAME:
@@ -108,12 +108,14 @@ for($idx = 0; $idx < count($ids); ++$idx){
 
 				insertPricePoint($db, $ids[$idx], $date, $price, $coeff);
 			}
+
+			break;
 		}
 	}
 
 	++$entitiesProcessed;
 
-	echo("\Entities Processed: ".$entitiesProcessed."\t\t");
+	echo("\rEntities Processed: ".$entitiesProcessed."\t\t");
 
 	if($entitiesProcessed == $entityLimit){
 		echo("\n");

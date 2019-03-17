@@ -7,7 +7,7 @@ require_once("simfinCreds.php");
 // begin script //
 
 $statementsProcessed = 0;
-$statementLimit 	 = 10;
+$statementLimit 	 = 5;
 
 $db 	= new mysqli($server, $user, $pass, $usedb);
 
@@ -55,9 +55,6 @@ for($idx = 0; $idx < count($ids); ++$idx){
 			if(is_null($pd) || is_null($fy) || is_null($ca))
 				continue;
 
-			if(statementMetaExists($db, $ids[$idx], $type, $fy, $pd))
-				continue;
-
 			if(substr($pd, 0, 3) == TRAILING_TWELVE)
 				continue;
 
@@ -92,7 +89,6 @@ for($idx = 0; $idx < count($ids); ++$idx){
 			$industryTemplateId 	= null;
 			$hasCalculationScheme 	= false;
 			$calculated 			= null;
-
 			$shtDataKeys = array_keys($shtData);
 
 			for($k = 0; $k < count($shtDataKeys); ++$k){
