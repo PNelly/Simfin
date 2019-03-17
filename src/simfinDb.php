@@ -237,21 +237,7 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 	$calculated,
 	$industryTemplateId){
 
-	$sql  = "SELECT ".COL_STMT_ID." ";
-	$sql .= "FROM ".TBL_STMT_META." ";
-	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simfinId." ";
-	$sql .= "AND ".COL_STMT_TYPE_ID." = ".$statementTypeId." ";
-	$sql .= "AND ".COL_FYEAR." = ".$fyear." ";
-	$sql .= "AND ".COL_PERIOD_ID." = ".$periodId." ";
-	$sql .= "AND ".COL_CALCULATED." = ".$calculated." ";
-	$sql .= "AND ".COL_TEMPLATE_ID." = ".$industryTemplateId.";";
-
-	$result = $db->query($sql);
-
-	if($result->num_rows > 0)
-		return (($result->fetch_row())[0]);
-
-	$sql  = "INSERT INTO ".TBL_STMT_META." ";
+	$sql  = "REPLACE INTO ".TBL_STMT_META." ";
 	$sql .= "(".COL_SIMFIN_ID.", ".COL_STMT_TYPE_ID.", ".COL_FYEAR.", ";
 	$sql .= COL_PERIOD_ID.", ".COL_CALCULATED.", ".COL_TEMPLATE_ID.") ";
 	$sql .= "VALUES (".$simfinId.", ".$statementTypeId.", ";
@@ -270,6 +256,18 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 	return 	( $db->insert_id > 0)
 			? $db->insert_id
 			: SQL_NULL;
+}
+
+function clearCalculationScheme($db, $statementId){
+
+	$sql  = "DELETE FROM ".TBL_SCHEMES." ";
+	$sql .= "WHERE ".COL_STMT_ID." = ".$statementId;
+
+	if($db->query($sql) !== true){
+		echo("Could not clear calculation scheme, statement: \n");
+		echo(($sql)."\n");
+		echo(($db->error)."\n");
+	}
 }
 
 function insertCalculationScheme($db, $statementId, $scheme){
@@ -315,10 +313,12 @@ function insertCalculationScheme($db, $statementId, $scheme){
 
 function insertStatementLineItems($db, $statementId, $lineItems){
 
+	$valueIds 		= array();
+
 	for($idx = 0; $idx < count($lineItems); ++$idx){
 
-		$lineItem 	= $lineItems[$idx];
-		$keys 		= array_keys($lineItem);
+		$lineItem 		= $lineItems[$idx];
+		$keys 			= array_keys($lineItem);
 
 		$templateId 	= SQL_NULL;
 		$universalId 	= SQL_NULL;
@@ -342,6 +342,7 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 				break;
 				case KEY_NAME:
 					$valueNameId = getStatementValueNameId($db, $val);
+					$valueIds[$valueNameId] = $valueNameId;
 				break;
 				case KEY_PARENT:
 					$parentId = $val;
@@ -374,6 +375,47 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 				echo(($db->errno).": ".($db->error)."\n");
 			}
 		}
+	}
+
+	// remove any line items not present in the api response
+
+	$sql  = "DELETE FROM ".TBL_VALUES." ";
+	$sql .= "WHERE ".COL_STMT_ID." = ".$statementId." ";
+	$sql .= "AND ".COL_NAME_ID." NOT IN ( ";
+
+	$keys = array_keys($valueIds);
+
+	for($k = 0; $k < count($keys); ++$k)
+		if($k == count($keys) -1)
+			$sql .= ($keys[$k]).");";
+		else 
+			$sql .= ($keys[$k]).", ";
+
+	if($db->query($sql) !== true){
+		echo("\nCould not reconcile line items, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+	}
+}
+
+function reconcileStatements($db, $simId, $statementIds){
+
+	$sql  = "DELETE FROM ".TBL_STMT_META. " ";
+	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simId." ";
+	$sql .= "AND ".COL_STMT_ID." NOT IN ( ";
+
+	$keys = array_keys($statementIds);
+
+	for($k = 0; $k < count($keys); ++$k)
+		if($k == count($keys) -1)
+			$sql .= ($keys[$k]).");";
+		else
+			$sql .= ($keys[$k]).", ";
+
+	if($db->query($sql) !== true){
+		echo("\nCould not reconcile sheets, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
 	}
 }
 

@@ -25,6 +25,8 @@ for($idx = 0; $idx < count($ids); ++$idx){
 
 	// get available statements //
 
+	$statementIds = array();
+
 	$urlA 	= "https://simfin.com/api/v1/companies/id/";
 	$urlB 	= "/statements/list?api-key=";
 
@@ -119,7 +121,11 @@ for($idx = 0; $idx < count($ids); ++$idx){
 				$industryTemplateId
 			);
 
+			$statementIds[$statementId] = $statementId;
+
 			// calculation scheme
+
+			clearCalculationScheme($db, $statementId);
 
 			if($hasCalculationScheme)
 				insertCalculationScheme($db, $statementId, $shtData[KEY_SCHEME]);
@@ -140,6 +146,8 @@ for($idx = 0; $idx < count($ids); ++$idx){
 
 		break;
 	}
+
+	reconcileStatements($db, $ids[$idx], $statementIds);
 
 	break;
 }
