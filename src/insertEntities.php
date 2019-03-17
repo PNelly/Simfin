@@ -18,25 +18,25 @@ $db = new mysqli($server, $user, $pass, $usedb);
 if($db->connect_error)
 	die("Could not connect to DB: ".$db->connect_error);
 
-for($idx1 = 0; $idx1 < count($responseArray); ++$idx1){
+for($idx = 0; $idx < count($responseArray); ++$idx){
 
-	echo("\r[i]: ".$idx1."\t");
+	echo("\r[i]: ".$idx."\t");
 
-	$entity = $responseArray[$idx1];
+	$entity = $responseArray[$idx];
 	$keys   = array_keys($entity);
 
 	$sid  = false;
 	$tkr  = false;
 	$name = false;
 
-	for($idx2 = 0; $idx2 < count($keys); ++$idx2){
+	for($k = 0; $k < count($keys); ++$k){
 
-		$key = $keys[$idx2];
+		$key = $keys[$k];
 		$val = $entity[$key];
 
 		switch($key){
 
-			case KEY_SIMFIN_ID:  	$sid  = $val; 	break;
+			case KEY_SIMFIN_ID:  	$sid  = $val; 							break;
 			case KEY_TICKER: 		$tkr  = $db->real_escape_string($val); 	break;
 			case KEY_ENTITY_NAME:   $name = $db->real_escape_string($val); 	break;
 		}
@@ -56,7 +56,7 @@ for($idx1 = 0; $idx1 < count($responseArray); ++$idx1){
 		echo(($db->error)."\n");
 	}
 
-	if($idx1 == count($responseArray) -1)
+	if($idx == count($responseArray) -1)
 		echo("\n");
 }
 

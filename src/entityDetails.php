@@ -14,19 +14,14 @@ $db = new mysqli($server, $user, $pass, $usedb);
 if($db->connect_error)
 	die("Could not connect to DB: ".$db->connect_error);
 
-$sql 	= "SELECT ".COL_SIMFIN_ID." FROM ".TBL_ENTITIES.";";
+$ids = getEntityIds($db);
 
-$result = $db->query($sql);
+if(count($ids) <= 0) 
+	die("No ids in selection");
 
-if(!$result)
-	die("Query for simfin id's failed");
+for($idx = 0; $idx < count($ids); ++$idx){
 
-if($result->num_rows == 0)
-	die("No simfin id's in database");
-
-while($row = $result->fetch_assoc()){
-
-	$sid  = $row[COL_SIMFIN_ID];
+	$sid  = $ids[$idx];
 
 	$url  = $urlA.$sid.$urlB.$apiKey;
 

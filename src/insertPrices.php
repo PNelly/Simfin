@@ -14,20 +14,10 @@ $db 	= new mysqli($server, $user, $pass, $usedb);
 if($db->connect_error)
 	die("Failed DB Connection: ".$db->connect_error."\n");
 
-// collect all ids from database //
+$ids = getEntityIds($db);
 
-$sql 	= "SELECT ".COL_SIMFIN_ID." FROM ".TBL_ENTITIES.";";
-
-$result = $db->query($sql);
-
-if($result->num_rows <= 0)
-	die("No ids in selection\n");
-
-$ids = array();
-$idx = 0;
-
-while($row = $result->fetch_assoc())
-	$ids[$idx++] = (int) $row[COL_SIMFIN_ID];
+if(count($ids) <= 0) 
+	die("No ids in selection");
 
 // prices for each entity //
 
@@ -60,9 +50,9 @@ for($idx = 0; $idx < count($ids); ++$idx){
 
 				if(!$typeFound){
 
-					$shareClassTypeId = getShareClassTypeId($db, $resp[$key]);
-					$typeFound = true;
-					$k = 0;
+					$shareClassTypeId 	= getShareClassTypeId($db, $resp[$key]);
+					$typeFound 			= true;
+					$k 					= 0;
 
 					continue;
 				}
@@ -113,7 +103,7 @@ for($idx = 0; $idx < count($ids); ++$idx){
 						case KEY_SPLIT_COEF: 	$coeff = $elemVal; 	break;
 					}
 				}
-				
+
 				// insert record
 
 				insertPricePoint($db, $ids[$idx], $date, $price, $coeff);

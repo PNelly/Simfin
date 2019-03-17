@@ -184,7 +184,7 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 	if($result->num_rows > 0)
 		return (($result->fetch_row())[0]);
 
-	$sql  = "INSERT INTO ".STD_STATEMENT_META." ";
+	$sql  = "INSERT INTO ".TBL_STMT_META." ";
 	$sql .= "(".COL_SIMFIN_ID.", ".COL_STMT_TYPE_ID.", ".COL_FYEAR.", ";
 	$sql .= COL_PERIOD_ID.", ".COL_CALCULATED.", ".COL_TEMPLATE_ID.") ";
 	$sql .= "VALUES (".$simfinId.", ".$statementTypeId.", ";
@@ -544,12 +544,27 @@ function insertPricePoint($db, $simfinId, $date, $price, $coeff){
 	$sql .= "VALUES (".$simfinId.", '".$date."', ";
 	$sql .= $price.", ".$coeff.");";
 
-	if($db->query($sql) !== true){
+	if($db->query($sql) !== true && $db->errno != DUPLICATE_ENTRY){
 
 		echo("\nCould not insert price point, statement: \n");
 		echo($sql."\n");
 		echo(($db->error)."\n");
 	}
+}
+
+function getEntityIds($db){
+
+	$sql = "SELECT ".COL_SIMFIN_ID." FROM ".TBL_ENTITIES.";";
+
+	$result = $db->query($sql);
+
+	$ids = array();
+	$idx = 0;
+
+	while(($row = $result->fetch_assoc()) !== null)
+		$ids[$idx++] = (int) $row[COL_SIMFIN_ID];
+
+	return $ids;
 }
 
 ?>
