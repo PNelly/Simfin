@@ -4,7 +4,37 @@ require_once("simfinDB.php");
 
 require_once("simfinCreds.php");
 
+// helper for sheet comparisons //
+
+function sheetExists(
+	$type,
+	$year,
+	$period,
+	& $existingSheets){
+
+	for($idx = 0; $idx < count($existingSheets); ++$idx){
+
+		$sheetMeta = $existingSheets[$idx];
+
+		if($sheetMeta[COL_STMT_NAME] 	== $type
+		&& $sheetMeta[COL_FYEAR] 		== $year
+		&& $sheetMeta[COL_PERIOD_NAME] 	== $period){
+
+			unset($existingSheets[$idx]);
+
+			$existingSheets = array_values($existingSheets);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // begin script //
+
+$skipExistingSheets 	= true;
+$reconcileStatements 	= false;	
 
 $statementsProcessed = 0;
 $statementLimit 	 = 5;
@@ -22,6 +52,10 @@ if(count($ids) <= 0)
 // statements for each entity //
 
 for($idx = 0; $idx < count($ids); ++$idx){
+
+	// fetch existing statements for entity //
+
+	$existing = getStmtMetaDenormalized($db, $ids[$idx]);
 
 	// get available statements //
 
@@ -58,6 +92,9 @@ for($idx = 0; $idx < count($ids); ++$idx){
 				continue;
 
 			if(substr($pd, 0, 3) == TRAILING_TWELVE)
+				continue;
+
+			if($skipExistingSheets && sheetExists($type, $fy, $pd, $existing))
 				continue;
 
 			$shtUrlA = "https://simfin.com/api/v1/companies/id/";
@@ -147,7 +184,8 @@ for($idx = 0; $idx < count($ids); ++$idx){
 		break;
 	}
 
-	reconcileStatements($db, $ids[$idx], $statementIds);
+	if($reconcileStatements)
+		reconcileStatements($db, $ids[$idx], $statementIds);
 
 	break;
 }

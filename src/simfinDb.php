@@ -400,6 +400,8 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 
 function reconcileStatements($db, $simId, $statementIds){
 
+	// remove any statements not received in last api call
+
 	$sql  = "DELETE FROM ".TBL_STMT_META. " ";
 	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simId." ";
 	$sql .= "AND ".COL_STMT_ID." NOT IN ( ";
@@ -674,6 +676,36 @@ function getEntityIds($db){
 		$ids[$idx++] = (int) $row[COL_SIMFIN_ID];
 
 	return $ids;
+}
+
+function getStmtMetaDenormalized($db, $simfinId){
+
+	$sql  = "SELECT ".COL_STMT_NAME.", ";
+	$sql .= COL_FYEAR.", ".COL_PERIOD_NAME." ";
+	$sql .= "FROM ".TBL_STMT_META." ";
+	$sql .= "INNER JOIN ".TBL_STMT_TYPES." ON ";
+	$sql .= TBL_STMT_TYPES.".".COL_STMT_TYPE_ID;
+	$sql .= " = ".TBL_STMT_META.".".COL_STMT_TYPE_ID." ";
+	$sql .= "INNER JOIN ".TBL_PERIODS." ON ";
+	$sql .= TBL_PERIODS.".".COL_PERIOD_ID." = ";
+	$sql .= TBL_STMT_META.".".COL_PERIOD_ID." ";
+	$sql .= "WHERE ".TBL_STMT_META.".".COL_SIMFIN_ID;
+	$sql .= " = ".$simfinId;
+
+	$result = $db->query($sql);
+
+	if($result === false){
+
+		echo("could not query statements for id ".$simfinId."\n");
+		echo("statement: ".$sql."\n");
+		echo(($db->error)."\n");
+
+		return false;
+
+	} else {
+
+		return ($result->fetch_all(MYSQLI_ASSOC));
+	}
 }
 
 ?>
