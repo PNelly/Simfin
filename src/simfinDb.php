@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_STRICT);
+error_reporting(-1);
 
 define("DUPLICATE_ENTRY", 	1062);
 define("HTTP_SUCCESS", 		200);
@@ -145,10 +145,15 @@ function insertEntity($db, $simfinId, $ticker, $name){
 	$sql .= $simfinId.", '".$ticker."', '".$name."' );";
 
 	if($db->query($sql) !== true){
+
 		echo("\nCould not insert entity, statement:\n");
 		echo($sql."\n");
 		echo(($db->error)."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function updateEntity($db, $simId, $fye, $emp, $secId, $indId){
@@ -161,10 +166,15 @@ function updateEntity($db, $simId, $fye, $emp, $secId, $indId){
 	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simId.";";
 
 	if($db->query($sql) !== true){
+
 		echo("could not update entity, statement: \n");
 		echo($sql."\n");
 		echo($db->error."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function sectorCodeFromIndustryCode($industryCode){
@@ -174,9 +184,12 @@ function sectorCodeFromIndustryCode($industryCode){
 
 function sectorNameFromIndustryCode($industryCode){
 
-	$sectorCode = sectorCodeFromIndustryCode($industryCode);
+	global $__SECTORS;
 
-	return $__SECTORS[$sectorCode];
+	$sectorCode = sectorCodeFromIndustryCode($industryCode);
+	$sectorName = $__SECTORS[$sectorCode];
+
+	return (is_null($sectorName) ? false : $sectorName);
 }
 
 function getSectorId($db, $sectorCode, $sectorName){
@@ -199,6 +212,15 @@ function getSectorId($db, $sectorCode, $sectorName){
 	$sql .= "'".$sectorName."');";
 
 	$result = $db->query($sql);
+
+	if($result === false){
+
+		echo("could not not add sector id, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+
+		return false;
+	}
 
 	return 	( $db->insert_id > 0)
 			? $db->insert_id
@@ -226,6 +248,15 @@ function getIndustryId($db, $industryCode, $industryName){
 
 	$result = $db->query($sql);
 
+	if($result === false){
+
+		echo("could not not add industry id, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+
+		return false;
+	}
+
 	return 	( $db->insert_id > 0)
 			? $db->insert_id
 			: SQL_NULL;
@@ -250,7 +281,7 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 		echo($sql."\n");
 		echo(($db->error)."\n");
 
-		return SQL_NULL;
+		return false;
 	}
 
 	return 	( $db->insert_id > 0)
@@ -264,10 +295,15 @@ function clearCalculationScheme($db, $statementId){
 	$sql .= "WHERE ".COL_STMT_ID." = ".$statementId;
 
 	if($db->query($sql) !== true){
+
 		echo("Could not clear calculation scheme, statement: \n");
 		echo(($sql)."\n");
 		echo(($db->error)."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function insertCalculationScheme($db, $statementId, $scheme){
@@ -304,11 +340,16 @@ function insertCalculationScheme($db, $statementId, $scheme){
 		$sql .= $fy.", ".$periodId.", ".$sn.");";
 
 		if($db->query($sql) !== true){
+
 			echo("\nCould not insert calulation scheme element, statement: \n");
 			echo($sql."\n");
 			echo(($db->error)."\n");
+
+			return false;
 		}
 	}
+
+	return true;
 }
 
 function insertStatementLineItems($db, $statementId, $lineItems){
@@ -373,6 +414,8 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 				echo("\nCould not insert line item, statement: \n");
 				echo($sql."\n");
 				echo(($db->errno).": ".($db->error)."\n");
+
+				return false;
 			}
 		}
 	}
@@ -392,10 +435,15 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 			$sql .= ($keys[$k]).", ";
 
 	if($db->query($sql) !== true){
+
 		echo("\nCould not reconcile line items, statement: \n");
 		echo($sql."\n");
 		echo(($db->error)."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function reconcileStatements($db, $simId, $statementIds){
@@ -415,10 +463,15 @@ function reconcileStatements($db, $simId, $statementIds){
 			$sql .= ($keys[$k]).", ";
 
 	if($db->query($sql) !== true){
+
 		echo("\nCould not reconcile sheets, statement: \n");
 		echo($sql."\n");
 		echo(($db->error)."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function getIndustryTemplateId($db, $templateName){
@@ -445,7 +498,7 @@ function getIndustryTemplateId($db, $templateName){
 		echo($sql."\n");
 		echo(($db->error)."\n");
 
-		return SQL_NULL;
+		return false;
 	}
 
 	return 	( $db->insert_id > 0)
@@ -477,7 +530,7 @@ function getStatementTypeId($db, $statementType){
 		echo($sql."\n");
 		echo(($db->error)."\n");
 
-		return SQL_NULL;
+		return false;
 	}
 
 	return 	( $db->insert_id > 0)
@@ -509,7 +562,7 @@ function getPeriodId($db, $period){
 		echo($sql."\n");
 		echo(($db->error)."\n");
 
-		return SQL_NULL;
+		return false;
 	}
 
 	return 	( $db->insert_id > 0)
@@ -573,7 +626,7 @@ function getShareClassTypeId($db, $type){
 		echo($sql."\n");
 		echo(($db->error)."\n");
 
-		return SQL_NULL;
+		return false;
 	}
 
 	return  ( $db->insert_id > 0)
@@ -605,7 +658,7 @@ function getShareClassNameId($db, $name, $typeId){
 		echo($sql."\n");
 		echo(($db->error)."\n");
 
-		return SQL_NULL;
+		return false;
 	}
 
 	return  ( $db->insert_id > 0)
@@ -637,10 +690,15 @@ function updateEntityShareClass($db, $simfinId, $shareClassId){
 	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simfinId.";";
 
 	if($db->query($sql) !== true){
+
 		echo("could not update entity, statement:\n");
 		echo($sql."\n");
 		echo($db->error."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function insertPricePoint($db, $simfinId, $date, $price, $coeff){
@@ -658,7 +716,11 @@ function insertPricePoint($db, $simfinId, $date, $price, $coeff){
 		echo("\nCould not insert price point, statement: \n");
 		echo($sql."\n");
 		echo(($db->error)."\n");
+
+		return false;
 	}
+
+	return true;
 }
 
 function getEntityIds($db){
@@ -668,6 +730,15 @@ function getEntityIds($db){
 	$sql .= "ORDER BY ".COL_SIMFIN_ID." ASC;";
 
 	$result = $db->query($sql);
+
+	if($result === false){
+
+		echo("\nCould not query entity ids, statement: \n");
+		echo($sql."\n");
+		echo(($db->error)."\n");
+
+		return false;
+	}
 
 	$ids = array();
 	$idx = 0;

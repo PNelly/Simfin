@@ -1,7 +1,6 @@
 <?php
 
 require_once("simfinDB.php");
-
 require_once("simfinCreds.php");
 
 // High Level Entity Information From Master List //
