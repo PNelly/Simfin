@@ -4,6 +4,7 @@ error_reporting(-1);
 
 require_once("simfinDB.php");
 require_once("simfinCreds.php");
+require_once("logging.php");
 
 function insertSharePricesForEntity($db, $entityId){
 
@@ -19,8 +20,15 @@ function insertSharePricesForEntity($db, $entityId){
 
 	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-	if($httpCode != HTTP_SUCCESS)
+	if($httpCode != HTTP_SUCCESS){
+
+		$message  = "Prices for entity - curl failed ";
+		$message .= $httpCode.", ".$url;
+
+		logError($message);
+
 		return false;
+	}
 
 	$keys = array_keys($resp);
 
@@ -57,13 +65,28 @@ function insertSharePricesForEntity($db, $entityId){
 		}
 	}
 
-	if(!$shareClassTypeId || !$shareClassNameId)
+	if(!$shareClassTypeId){
+
+		logError("Prices for entity - invalid share class type id ".$shareClassTypeId);
+
 		return false;
+	}
+
+	if(!$shareClassNameId){
+
+		logError("Prices for entity - invalid share class name id ".$shareClassNameId);
+
+		return false;
+	}
 
 	// update entity with share class data
 
-	if(!updateEntityShareClass($db, $entityId, $shareClassNameId))
+	if(!updateEntityShareClass($db, $entityId, $shareClassNameId)){
+
+		logError("Prices for entity - share class update failed for ".$entityId);
+
 		return false;
+	}
 
 	// iterate over prices
 
@@ -97,8 +120,16 @@ function insertSharePricesForEntity($db, $entityId){
 					}
 				}
 
-				if(!insertPricePoint($db, $entityId, $date, $price, $coeff))
+				if(!insertPricePoint($db, $entityId, $date, $price, $coeff)){
+
+					$message  = "Prices for entity - price point insert failed ";
+					$message .= "id ".$entityId." date ".$date." price ".$price." ";
+					$message .= "split coefficient ".$coeff;
+
+					logError($message);
+
 					return false;
+				}
 			}
 
 			// found what we're looking for //

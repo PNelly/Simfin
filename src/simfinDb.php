@@ -4,6 +4,7 @@ error_reporting(-1);
 
 define("DUPLICATE_ENTRY", 	1062);
 define("HTTP_SUCCESS", 		200);
+define("HTTP_SERVER_ERROR", 500);
 define("TRAILING_TWELVE", 	"TTM");
 
 define("SEC_IND", 			"Industrials");
@@ -146,9 +147,10 @@ function insertEntity($db, $simfinId, $ticker, $name){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert entity, statement:\n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Entity insertion failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -167,9 +169,10 @@ function updateEntity($db, $simId, $fye, $emp, $secId, $indId){
 
 	if($db->query($sql) !== true){
 
-		echo("could not update entity, statement: \n");
-		echo($sql."\n");
-		echo($db->error."\n");
+		$message  = "Entity update failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -188,6 +191,9 @@ function sectorNameFromIndustryCode($industryCode){
 
 	$sectorCode = sectorCodeFromIndustryCode($industryCode);
 	$sectorName = $__SECTORS[$sectorCode];
+
+	if(is_null($sectorName))
+		logError("Invalid sector name, industry code ".$industryCode);
 
 	return (is_null($sectorName) ? false : $sectorName);
 }
@@ -215,9 +221,10 @@ function getSectorId($db, $sectorCode, $sectorName){
 
 	if($result === false){
 
-		echo("could not not add sector id, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Sector add failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -250,9 +257,10 @@ function getIndustryId($db, $industryCode, $industryName){
 
 	if($result === false){
 
-		echo("could not not add industry id, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Industry id add failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -277,9 +285,10 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert metadata, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Statement meta insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -296,9 +305,10 @@ function clearCalculationScheme($db, $statementId){
 
 	if($db->query($sql) !== true){
 
-		echo("Could not clear calculation scheme, statement: \n");
-		echo(($sql)."\n");
-		echo(($db->error)."\n");
+		$message  = "calculation scheme clear failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -341,9 +351,10 @@ function insertCalculationScheme($db, $statementId, $scheme){
 
 		if($db->query($sql) !== true){
 
-			echo("\nCould not insert calulation scheme element, statement: \n");
-			echo($sql."\n");
-			echo(($db->error)."\n");
+			$message  = "calculation scheme element insert failed, statement: ";
+			$message .= "<".$sql."> error: <".$db->error.">";
+
+			logError($message);
 
 			return false;
 		}
@@ -411,9 +422,10 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 
 			if($db->query($sql) !== true){
 
-				echo("\nCould not insert line item, statement: \n");
-				echo($sql."\n");
-				echo(($db->errno).": ".($db->error)."\n");
+				$message  = "line item insert failed, statement: ";
+				$message .= "<".$sql."> error: <".$db->error.">";
+
+				logError($message);
 
 				return false;
 			}
@@ -436,9 +448,10 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not reconcile line items, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "line item reconciliation failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -464,9 +477,10 @@ function reconcileStatements($db, $simId, $statementIds){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not reconcile sheets, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "sheet reconciliation failed, statement";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -494,9 +508,10 @@ function getIndustryTemplateId($db, $templateName){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert industry template, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Industry template insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -526,9 +541,10 @@ function getStatementTypeId($db, $statementType){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert statement type, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Statement type insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -558,9 +574,10 @@ function getPeriodId($db, $period){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert period name, statment: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Period name insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -590,9 +607,10 @@ function getStatementValueNameId($db, $name){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert value name, statment: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Value name insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return SQL_NULL;
 	}
@@ -622,9 +640,10 @@ function getShareClassTypeId($db, $type){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert share class type, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Share class type insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -654,9 +673,10 @@ function getShareClassNameId($db, $name, $typeId){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCoult not insert share class name, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Share class name insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -680,6 +700,14 @@ function statementMetaExists($db, $simfinId, $type, $fyear, $period){
 
 	$result = $db->query($sql);
 
+	if(!$result){
+
+		$message  = "Sheet meta exists failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+	}
+
 	return ($result->num_rows > 0);
 }
 
@@ -691,9 +719,10 @@ function updateEntityShareClass($db, $simfinId, $shareClassId){
 
 	if($db->query($sql) !== true){
 
-		echo("could not update entity, statement:\n");
-		echo($sql."\n");
-		echo($db->error."\n");
+		$message  = "Entity update failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -713,9 +742,10 @@ function insertPricePoint($db, $simfinId, $date, $price, $coeff){
 
 	if($db->query($sql) !== true){
 
-		echo("\nCould not insert price point, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Price point insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -733,9 +763,10 @@ function getEntityIds($db){
 
 	if($result === false){
 
-		echo("\nCould not query entity ids, statement: \n");
-		echo($sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Entity ids query failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 	}
@@ -767,9 +798,10 @@ function getStmtMetaDenormalized($db, $simfinId){
 
 	if($result === false){
 
-		echo("could not query statements for id ".$simfinId."\n");
-		echo("statement: ".$sql."\n");
-		echo(($db->error)."\n");
+		$message  = "Sheet data query failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
 
 		return false;
 

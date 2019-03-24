@@ -4,6 +4,7 @@ error_reporting(-1);
 
 require_once("simfinDB.php");
 require_once("simfinCreds.php");
+require_once("logging.php");
 
 function seedEntities($db){
 
@@ -15,12 +16,19 @@ function seedEntities($db){
 
 	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-	if($httpCode != HTTP_SUCCESS)
+	if($httpCode != HTTP_SUCCESS){
+
+		$message  = "Seed Entities - curl failed ".$httpCode;
+		$message .= ", ".$url;
+
+		logError($message);
+
 		return false;
+	}
 
 	for($idx = 0; $idx < count($response); ++$idx){
 
-		echo("\r[i]: ".$idx."\t");
+		logActivity("Seed Entities ".($idx+1)." entities inserted");
 
 		$entity = $response[$idx];
 		$keys   = array_keys($entity);
@@ -42,11 +50,15 @@ function seedEntities($db){
 			}
 		}
 
-		if(!insertEntity($db, $sid, $tkr, $name))
-			return false;
+		if(!insertEntity($db, $sid, $tkr, $name)){
 
-		if($idx == count($response) -1)
-			echo("\n");
+			$message  = "Seed Entities - Insertion failed for ";
+			$message .= "id ".$sid." ticker ".$tkr." name ".$name;
+
+			logError($message);
+
+			return false;
+		}
 	}
 
 	return true;

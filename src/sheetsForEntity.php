@@ -4,6 +4,7 @@ error_reporting(-1);
 
 require_once("simfinDB.php");
 require_once("simfinCreds.php");
+require_once("logging.php");
 
 function sheetExists(
 	$type,
@@ -52,8 +53,15 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 
 	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-	if($httpCode != HTTP_SUCCESS)
+	if($httpCode != HTTP_SUCCESS){
+
+		$message  = "Sheets for Entity - list curl failed ";
+		$message .= $httpCode.", ".$url;
+
+		logError($message);
+
 		return false;
+	}
 
 	$types 	= array_keys($resp);
 
@@ -98,16 +106,42 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 
 			$httpCode = curl_getinfo($shtCurl, CURLINFO_HTTP_CODE);
 
-			if($httpCode != HTTP_SUCCESS)
-				return false;
+			if($httpCode != HTTP_SUCCESS){
+
+				if($httpCode == HTTP_SERVER_ERROR){
+
+					$message  = "Sheets for entity - server error ".$httpCode." ";
+					$message .= "on ".$shtUrl.", skipping sheet";
+
+					logActivity($message);
+
+					continue;
+
+				} else {
+
+					$message  = "Sheets for entity - sheet curl failed ";
+					$message .= $httpCode.", ".$shtUrl;
+
+					logError($message);
+
+					return false;
+				}
+			}
 
 			$shtData = json_decode($shtCurlResponse, true);
 
 			$periodId 				= getPeriodId($db, $pd);
 			$statementTypeId 		= getStatementTypeId($db, $type);
 
-			if(!$periodId || !$statementTypeId)
+			if(!$periodId || !$statementTypeId){
+
+				$message  = "Sheets for entity - bad period id or stmt type id, ";
+				$message .= "period id ".$periodId." type id ".$statementTypeId;
+
+				logError($message);
+
 				return false;
+			}
 
 			$industryTemplateId 	= null;
 			$hasCalculationScheme 	= false;
@@ -132,8 +166,15 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 				}
 			}
 
-			if(!$industryTemplateId)
+			if(!$industryTemplateId){
+
+				$message  = "Sheets for entity - invalid industry template id ";
+				$message .= $industryTemplateId;
+
+				logError($message);
+
 				return false;
+			}
 
 			$statementId = insertStatementMetadata(
 				$db,
@@ -145,8 +186,15 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 				$industryTemplateId
 			);
 
-			if(!$statementId)
+			if(!$statementId){
+
+				$message  = "Sheets for entity - invalid statement id ";
+				$message .= $statementId;
+
+				logError($message);
+
 				return false;
+			}
 
 			$apiIds[$statementId] = $statementId;
 
@@ -160,13 +208,19 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 			if(!insertStatementLineItems($db, $statementId, $shtData[KEY_VALUES]))
 				return false;
 
-			echo("\rSheetsInserted: ".++$sheetsInserted."\t\t");
+			$message  = "Sheets for entity - ".++$sheetsInserted." ";
+			$message .= "sheets inserted for ".$entityId;
+
+			logActivity($message);
 		}
 	}
 
-	if($replaceAllSheets)
-		if(!reconcileStatements($db, $entityId, $apiIds))
-			return false;
+	if($replaceAllSheets && !reconcileStatements($db, $entityId, $apiIds)){
+
+		logError("Sheets for entity - reconciliation failed");
+
+		return false;		
+	}
 
 	return true;
 }

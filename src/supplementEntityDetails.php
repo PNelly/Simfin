@@ -4,6 +4,7 @@ error_reporting(-1);
 
 require_once("simfinDB.php");
 require_once("simfinCreds.php");
+require_once("logging.php");
 
 function supplementEntityDetails($db, $entityId){
 
@@ -19,8 +20,12 @@ function supplementEntityDetails($db, $entityId){
 
 	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-	if($httpCode != HTTP_SUCCESS)
+	if($httpCode != HTTP_SUCCESS){
+
+		logError("Entity details - curl failed ".$httpCode);
+
 		return false;
+	}
 
 	$keys = array_keys($response);
 
@@ -54,8 +59,12 @@ function supplementEntityDetails($db, $entityId){
 		}
 	}
 
-	if($scn === false)
+	if($scn === false){
+
+		logError("Entity details - invalid sector name");
+
 		return false;
+	}
 
 	if($sid == null) $sid = SQL_NULL;
 	if($fye == null) $fye = SQL_NULL;
@@ -67,8 +76,18 @@ function supplementEntityDetails($db, $entityId){
 	$secId = getSectorId(  $db, $scc, $scn);
 	$indId = getIndustryId($db, $inc, $inn);
 
-	if($secId === false || $indId === false)
+	if($secId === false){
+
+		logError("Entity details - invalid sector id");
+
 		return false;
+
+	} else if ($indId === false){
+
+		logError("Entity details - invalid industry id");
+
+		return false;
+	}
 
 	return updateEntity($db, $sid, $fye, $emp, $secId, $indId);
 }

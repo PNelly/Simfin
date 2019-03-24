@@ -1,3 +1,5 @@
 simfinCreds.php
 apiKey.php
 output-semicolon-wide.csv
+activityLog.txt
+errorLog.txt
