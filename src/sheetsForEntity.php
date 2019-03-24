@@ -84,8 +84,15 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 			if(substr($pd, 0, 3) == TRAILING_TWELVE)
 				continue;
 
-			if(!$replaceAllSheets && sheetExists($type, $fy, $pd, $existingSheets))
+			if(!$replaceAllSheets && sheetExists($type, $fy, $pd, $existingSheets)){
+
+				$message  = "Sheet type ".$type." fy ".$fy." pd ".$pd." ";
+				$message .= "already exists for entity ".$entityId.", skipping";
+
+				logActivity($message);
+
 				continue;
+			}
 
 			$shtUrlA = "https://simfin.com/api/v1/companies/id/";
 			$shtUrlB = "/statements/standardised?stype=";

@@ -12,12 +12,20 @@ require_once("sheetsForEntity.php");
 require_once("pricesForEntity.php");
 
 $entitiesUpdated = 0;
-$entityLimit = 2;
+$entityLimit = 1;
 
 if(!isset($argv[1]))
-	die("no boolean whether to replace data");
+	die("no argument whether to replace data");
 
-$replaceData = $argv[1];
+if($argv[1] != "true" && $argv[1] != "false")
+	die("replace data must be \"true\" or \"false\"");
+
+$replaceData = false;
+
+if($argv[1] == "true")
+	$replaceData = true;
+else if ($argv[1] == "false")
+	$replaceData = false;
 
 $db = new mysqli(DB_SERVER, DB_WRITE_USER, DB_WRITE_PASS, DB_USE);
 

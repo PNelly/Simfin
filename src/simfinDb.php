@@ -140,19 +140,42 @@ function insertEntity($db, $simfinId, $ticker, $name){
 	$ticker = $db->real_escape_string($ticker);
 	$name 	= $db->real_escape_string($name);
 
-	$sql  = "REPLACE INTO ".TBL_ENTITIES." ";
+	// Cannot use REPLACE INTO because partcipating
+	// delete will remove all related sheets on cascade
+
+	$sql  = "INSERT INTO ".TBL_ENTITIES." ";
 	$sql .= "(".COL_SIMFIN_ID.", ".COL_TICKER.", ";
 	$sql .= COL_ENTITY_NAME.") VALUES ( ";
 	$sql .= $simfinId.", '".$ticker."', '".$name."' );";
 
 	if($db->query($sql) !== true){
 
-		$message  = "Entity insertion failed, statement: ";
-		$message .= "<".$sql."> error: <".$db->error.">";
+		if($db->errno == DUPLICATE_ENTRY){
 
-		logError($message);
+			$sql  = "UPDATE ".TBL_ENTITIES." SET ";
+			$sql .= COL_TICKER." = '".$ticker."', ";
+			$sql .= COL_ENTITY_NAME." = '".$name."' ";
+			$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simfinId.";";
 
-		return false;
+			if($db->query($sql) !== true){
+
+				$message  = "Entity overwrite failed, statement: ";
+				$message .= "<".$sql."> error: <".$db->error.">";
+
+				logError($message);
+
+				return false;
+			}
+
+		} else {
+
+			$message  = "Entity insertion failed, statement: ";
+			$message .= "<".$sql."> error: <".$db->error.">";
+
+			logError($message);
+
+			return false;
+		}
 	}
 
 	return true;
@@ -275,6 +298,9 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 	$periodId,
 	$calculated,
 	$industryTemplateId){
+
+	// Use of REPLACE INTO is acceptable here because related
+	// statement values will be updated shortly after
 
 	$sql  = "REPLACE INTO ".TBL_STMT_META." ";
 	$sql .= "(".COL_SIMFIN_ID.", ".COL_STMT_TYPE_ID.", ".COL_FYEAR.", ";
