@@ -19,11 +19,11 @@ if(!isset($argv[1]))
 
 $replaceData = $argv[1];
 
-$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_USE);
+$db = new mysqli(DB_SERVER, DB_WRITE_USER, DB_WRITE_PASS, DB_USE);
 
 if($db->connect_error){
 
-	logError("DB Connect Error: ".$db->connect_error);
+	logError("Build database - DB Connect Error: ".$db->connect_error);
 
 	die();
 }
@@ -39,7 +39,7 @@ if(!seedEntities($db)){
 	$db->rollback();
 	$db->close();
 
-	logError("Could not seed entities");
+	logError("Build database - Could not seed entities");
 
 	die();
 }
@@ -54,7 +54,7 @@ if(!$entityIds){
 
 	$db->close();
 
-	logError("Could not query entity ids");
+	logError("Build database - Could not query entity ids");
 
 	die();
 }
@@ -69,7 +69,7 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 
 	if(!$details){
 
-		logError("details update failed for ".$entityIds[$idx]);
+		logError("Build database - details update failed for ".$entityIds[$idx]);
 
 		$db->rollback();
 		continue;
@@ -79,7 +79,7 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 
 	if(!$sheets){
 
-		logError("sheets update failed for ".$entityIds[$idx]);
+		logError("Build database - sheets update failed for ".$entityIds[$idx]);
 
 		$db->rollback();
 		continue;
@@ -89,7 +89,7 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 
 	if(!$prices){
 
-		logError("prices update failed for ".$entityIds[$idx]);
+		logError("Build database - prices update failed for ".$entityIds[$idx]);
 
 		$db->rollback();
 		continue;
@@ -97,7 +97,7 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 
 	$db->commit();
 
-	logActivity("Completed update for entity ".$entityIds[$idx]);
+	logActivity("Build database - Completed update for entity ".$entityIds[$idx]);
 
 	++$entitiesUpdated;
 
