@@ -26,9 +26,9 @@ function seedEntities($db){
 		return false;
 	}
 
-	for($idx = 0; $idx < count($response); ++$idx){
+	logActivity("Successfully curled entities");
 
-		logActivity("Seed Entities ".($idx+1)." entities inserted");
+	for($idx = 0; $idx < count($response); ++$idx){
 
 		$entity = $response[$idx];
 		$keys   = array_keys($entity);
@@ -60,6 +60,8 @@ function seedEntities($db){
 			return false;
 		}
 	}
+
+	logActivity("Seeded ".count($response)." entities");
 
 	return true;
 }

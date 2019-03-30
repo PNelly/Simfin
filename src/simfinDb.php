@@ -6,6 +6,40 @@ define("DUPLICATE_ENTRY", 	1062);
 define("HTTP_SUCCESS", 		200);
 define("HTTP_SERVER_ERROR", 500);
 define("TRAILING_TWELVE", 	"TTM");
+define("DEFAULT_FY_MO_END", 12);
+
+define("PERIOD_Q1", "Q1");
+define("PERIOD_Q2", "Q2");
+define("PERIOD_Q3", "Q3");
+define("PERIOD_Q4", "Q4");
+define("PERIOD_H1", "H1");
+define("PERIOD_H2", "H2");
+define("PERIOD_9M", "9M");
+define("PERIOD_FY", "FY");
+
+$__PD_BEG_MO_OFFSETS = array(
+
+	PERIOD_Q1 	=> 	-11,
+	PERIOD_Q2 	=> 	-8,
+	PERIOD_Q3	=> 	-5,
+	PERIOD_Q4 	=> 	-2,
+	PERIOD_H1	=> 	-11,
+	PERIOD_H2 	=> 	-5,
+	PERIOD_9M 	=> 	-11,
+	PERIOD_FY 	=> 	-11,
+);
+
+$__PD_END_MO_OFFSETS = array(
+
+	PERIOD_Q1 	=> 	-9,
+	PERIOD_Q2 	=> 	-6,
+	PERIOD_Q3	=> 	-3,
+	PERIOD_Q4 	=> 	-0,
+	PERIOD_H1	=> 	-6,
+	PERIOD_H2 	=> 	-0,
+	PERIOD_9M 	=> 	-3,
+	PERIOD_FY 	=> 	-0,
+);
 
 define("SEC_IND", 			"Industrials");
 define("SEC_TECH" ,			"Technology");
@@ -98,6 +132,8 @@ define("COL_SIMFIN_ID", 	"SIMFIN_ID");
 define("COL_STMT_TYPE_ID", 	"STD_STATEMENT_TYPE_ID");
 define("COL_FYEAR", 		"FYEAR");
 define("COL_PERIOD_ID", 	"PERIOD_ID");
+define("COL_BEG_DATE", 		"PERIOD_BEGIN_DATE");
+define("COL_END_DATE", 		"PERIOD_END_DATE");
 define("COL_CALCULATED", 	"CALCULATED");
 define("COL_TEMPLATE_ID", 	"STD_INDUSTRY_TEMPLATE_ID");
 define("COL_TEMPLATE_NAME", "STD_INDUSTRY_TEMPLATE_NAME");
@@ -299,15 +335,32 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 	$calculated,
 	$industryTemplateId){
 
-	// Use of REPLACE INTO is acceptable here because related
+	$pdName  = getPeriodName($db, $periodId);
+
+	$begDate = getPeriodBegDate($db, $simfinId, $fyear, $pdName);
+	$endDate = getPeriodEndDate($db, $simfinId, $fyear, $pdName);
+
+	if($begDate === false || $endDate === false){
+
+		$message  = "Could not establish statement beg/end dates ";
+		$message .= "period id ".$periodId." bd ".$begDate." ed ";
+		$message .= $endDate;
+
+		logError($message);
+
+		return false;
+	}
+
+	// Use of REPLACE INTO acceptable here because related
 	// statement values will be updated shortly after
 
 	$sql  = "REPLACE INTO ".TBL_STMT_META." ";
 	$sql .= "(".COL_SIMFIN_ID.", ".COL_STMT_TYPE_ID.", ".COL_FYEAR.", ";
-	$sql .= COL_PERIOD_ID.", ".COL_CALCULATED.", ".COL_TEMPLATE_ID.") ";
+	$sql .= COL_PERIOD_ID.", ".COL_BEG_DATE.", ".COL_END_DATE.", ";
+	$sql .= COL_CALCULATED.", ".COL_TEMPLATE_ID.") ";
 	$sql .= "VALUES (".$simfinId.", ".$statementTypeId.", ";
-	$sql .= $fyear.", ".$periodId.", ".$calculated.", ";
-	$sql .= $industryTemplateId.");";
+	$sql .= $fyear.", ".$periodId.", '".$begDate."', '".$endDate."', ";
+	$sql .= $calculated.", ".$industryTemplateId.");";
 
 	if($db->query($sql) !== true){
 
@@ -434,7 +487,7 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 			}
 		}
 
-		if($value != null){
+		if($value !== null){
 
 			$sql  = "REPLACE INTO ".TBL_VALUES." ";
 			$sql .= "(".COL_STMT_ID.", ".COL_TID.", ";
@@ -613,6 +666,31 @@ function getPeriodId($db, $period){
 			: SQL_NULL;	
 }
 
+function getPeriodName($db, $periodId){
+
+	$sql  = "SELECT ".COL_PERIOD_NAME." ";
+	$sql .= "FROM ".TBL_PERIODS." ";
+	$sql .= "WHERE ".COL_PERIOD_ID." = ";
+	$sql .= $periodId.";";
+
+	$result = $db->query($sql);
+
+	if($result === false){
+
+		$message  = "Period name query failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	if($result->num_rows > 0)
+		return (($result->fetch_row())[0]);
+	else
+		return false;
+}
+
 function getStatementValueNameId($db, $name){
 
 	$name = $db->real_escape_string($name);
@@ -726,7 +804,7 @@ function statementMetaExists($db, $simfinId, $type, $fyear, $period){
 
 	$result = $db->query($sql);
 
-	if(!$result){
+	if($result === false){
 
 		$message  = "Sheet meta exists failed, statement: ";
 		$message .= "<".$sql."> error: <".$db->error.">";
@@ -818,7 +896,7 @@ function getStmtMetaDenormalized($db, $simfinId){
 	$sql .= TBL_PERIODS.".".COL_PERIOD_ID." = ";
 	$sql .= TBL_STMT_META.".".COL_PERIOD_ID." ";
 	$sql .= "WHERE ".TBL_STMT_META.".".COL_SIMFIN_ID;
-	$sql .= " = ".$simfinId;
+	$sql .= " = ".$simfinId.";";
 
 	$result = $db->query($sql);
 
@@ -835,6 +913,166 @@ function getStmtMetaDenormalized($db, $simfinId){
 
 		return ($result->fetch_all(MYSQLI_ASSOC));
 	}
+}
+
+function getFYMonthEnding($db, $simfinId){
+
+	$sql  = "SELECT ".COL_FYEAR_END." ";
+	$sql .= "FROM ".TBL_ENTITIES." ";
+	$sql .= "WHERE ".COL_SIMFIN_ID." = ";
+	$sql .= $simfinId.";";
+
+	$result = $db->query($sql);
+
+	if($result === false){
+
+		$message  = "Could not get fy month ending, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	if($result->num_rows <= 0){
+
+		$message  = "no result from fy month query, simid ";
+		$message .= $simfinId;
+
+		logError($message);
+
+		return false;
+
+	} else {
+
+		return (int) (($result->fetch_row())[0]);
+	}
+}
+
+function getPeriodBegMoOffset($period){
+
+	global $__PD_BEG_MO_OFFSETS;
+
+	$offset = $__PD_BEG_MO_OFFSETS[$period];
+
+	if(is_null($offset)){
+
+		$message = "Invalid period offset parameter - ".$period;
+
+		logError($message);
+
+		return false;
+	}
+
+	return $offset;
+}
+
+function getPeriodEndMoOffset($period){
+
+	global $__PD_END_MO_OFFSETS;
+
+	$offset = $__PD_END_MO_OFFSETS[$period];
+
+	if(is_null($offset)){
+
+		$message = "Invalid period offset parameter - ".$period;
+
+		logError($message);
+
+		return false;
+	}
+
+	return $offset;
+}
+
+function getPeriodEndDate($db, $simfinId, $fy, $period){
+
+	$monthEnding = getFYMonthEnding($db, $simfinId);
+	$calYear 	 = $fy;
+
+	if($monthEnding === false){
+
+		$message  = "Could not get fy mo end for ".$simfinId;
+		$message .= ", statement: <".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	$endMoOffset = getPeriodEndMoOffset($period);
+
+	if($endMoOffset === false){
+
+		$message  = "Invalid month offset ".$endMoOffset;
+
+		logError($message);
+
+		return false;
+	}
+
+	$pdEndMo = $monthEnding +$endMoOffset;
+
+	if($pdEndMo <= 0){
+
+		--$calYear;
+		$pdEndMo += 12;
+	}
+
+	$pdEndMo = ($pdEndMo < 10)
+			 ? "0".strval($pdEndMo)
+			 : strval($pdEndMo);
+
+	$dateString = $calYear."-".$pdEndMo."-01";
+
+	$date = new DateTime($dateString);
+
+	return $date->format("Y-m-t");
+}
+
+function getPeriodBegDate($db, $simfinId, $fy, $period){
+
+	$monthEnding = getFYMonthEnding($db, $simfinId);
+	$calYear 	 = $fy;
+
+	if($monthEnding === false){
+
+		$message  = "Could not get fy mo end for ".$simfinId;
+		$message .= ", statement: <".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	$begMoOffset = getPeriodBegMoOffset($period);
+
+	if($begMoOffset === false){
+
+		$message  = "Invalid month offset";
+
+		logError($message);
+
+		return false;
+	}
+
+	$pdBegMo = $monthEnding +$begMoOffset;
+
+	if($pdBegMo <= 0){
+
+		--$calYear;
+		$pdBegMo += 12;
+	}
+
+	$pdBegMo = ($pdBegMo < 10)
+			 ? "0".strval($pdBegMo)
+			 : strval($pdBegMo);
+
+	$dateString = $calYear."-".$pdBegMo."-01";
+
+	$date = new DateTime($dateString);
+
+	return $date->format("Y-m-d");
 }
 
 ?>

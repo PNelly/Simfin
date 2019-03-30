@@ -67,7 +67,7 @@ function supplementEntityDetails($db, $entityId){
 	}
 
 	if($sid == null) $sid = SQL_NULL;
-	if($fye == null) $fye = SQL_NULL;
+	if($fye == null) $fye = DEFAULT_FY_MO_END;
 	if($emp == null) $emp = SQL_NULL;
 	if($scn == null) $scn = SQL_NULL;
 	if($scc == null) $scc = SQL_NULL;
