@@ -1,0 +1,102 @@
+<?php 
+
+error_reporting(-1);
+
+require_once("simfinDB.php");
+require_once("simfinCreds.php");
+require_once("logging.php");
+
+function insertSharesOutstandingForEntity($db, $entityId){
+
+	$urlA = "https://simfin.com/api/v1/companies/id/";
+	$urlB = "/shares/aggregated?api-key=";
+
+	$url  = $urlA.$entityId.$urlB.API_KEY;
+
+	$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+	$resp = json_decode(curl_exec($curl), true);
+
+	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+	if($httpCode != HTTP_SUCCESS){
+
+		$message  = "shares outstanding for entity - curl failed ";
+		$message .= $httpCode.", ".$url;
+
+		logError($message);
+
+		return false;
+	}
+
+	// iterate over shares outstanding data
+
+	for($idx = 0; $idx < count($resp); ++$idx){
+
+		$elem = $resp[$idx];
+		$keys = array_keys($elem);
+
+		// skip if not diluted shares over period
+
+		$diluted 	= false;
+		$overPeriod = false;
+
+		for($k = 0; $k < count($keys); ++$k){
+
+			$key = $keys[$k];
+
+			if($key == KEY_SHARE_FIGURE
+			&& $elem[$key] == VAL_DILUTED)
+				$diluted = true;
+
+			if($key == KEY_MEASURE
+			&& $elem[$key] == VAL_PERIOD)
+				$overPeriod = true;
+		}
+
+		if($diluted === false
+		|| $overPeriod === false)
+			continue;
+
+		$fy  	= SQL_NULL;
+		$pd  	= SQL_NULL;
+		$shares = SQL_NULL;
+
+		for($k = 0; $k < count($keys); ++$k){
+
+			$key = $keys[$k];
+			$val = $elem[$key];
+
+			switch ($key) {
+
+				case KEY_FYEAR: 	$fy = $val;		break;
+				case KEY_PERIOD: 	$pd = $val; 	break;
+				case KEY_VALUE: 	$shares = $val; break;
+			}
+		}
+
+		// skip if trailing twelve months
+
+		if(substr($pd, 0, 3) == TRAILING_TWELVE)
+			continue;
+
+		if(!insertSharesOutstanding($db, $entityId, $fy, $pd, $shares)){
+
+			$message  = "shares outstanding for entity - insert failed ";
+			$message .= $entityId." fy ".$fy." pd ".$pd." shares ".$shares;
+
+			logError($message);
+
+			return false;
+		}
+	}
+
+	$message = "shares outstanding for entity - completed ".$entityId;
+
+	logActivity($message);
+
+	return true;	
+}
+
+?>

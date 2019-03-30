@@ -10,6 +10,7 @@ require_once("seedEntities.php");
 require_once("supplementEntityDetails.php");
 require_once("sheetsForEntity.php");
 require_once("pricesForEntity.php");
+require_once("sharesForEntity.php");
 
 $entitiesUpdated = 0;
 $entityLimit = 1;
@@ -78,6 +79,16 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 	if(!$details){
 
 		logError("Build database - details update failed for ".$entityIds[$idx]);
+
+		$db->rollback();
+		continue;
+	}
+
+	$shares = insertSharesOutstandingForEntity($db, $entityIds[$idx]);
+
+	if(!$shares){
+
+		logError("Build database - shares update failed for ".$entityIds[$idx]);
 
 		$db->rollback();
 		continue;

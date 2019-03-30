@@ -229,6 +229,10 @@ function insertSheetsForEntity($db, $entityId, $replaceAllSheets){
 		return false;		
 	}
 
+	$message = "Sheets for entity - completed sheets for ".$entityId;
+
+	logActivity($message);
+
 	return true;
 }
 

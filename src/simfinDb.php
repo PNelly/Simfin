@@ -94,7 +94,7 @@ define("KEY_UID", 			"uid");
 define("KEY_NAME", 			"standardisedName");
 define("KEY_PARENT", 		"parent_tid");
 define("KEY_DISPLAY", 		"displayLevel");
-define("KEY_VALUE", 		"valueChosen");
+define("KEY_VAL_CHOSEN", 	"valueChosen");
 define("KEY_CALCULATED", 	"calculated");
 define("KEY_SCHEME", 		"calculationScheme");
 define("KEY_TEMPALTE", 		"industryTemplate");
@@ -112,6 +112,12 @@ define("KEY_PRICE_DATA", 	"priceData");
 define("KEY_PRICE_DATE", 	"date");
 define("KEY_CLOSE_ADJ", 	"closeAdj");
 define("KEY_SPLIT_COEF", 	"splitCoef");
+define("KEY_SHARE_FIGURE", 	"figure");
+define("KEY_MEASURE", 		"measure");
+define("KEY_VALUE", 		"value");
+
+define("VAL_DILUTED", 		"common-outstanding-diluted");
+define("VAL_PERIOD", 		"period");
 
 define("TBL_STMT_META", 	"STD_STATEMENT_META");
 define("TBL_SCHEMES", 		"STD_STATEMENT_CALCULATION_SCHEMES");
@@ -126,6 +132,7 @@ define("TBL_INDUSTRY", 		"STD_INDUSTRIES");
 define("TBL_SHRCLS_TYPES", 	"SHARE_CLASS_TYPES");
 define("TBL_SHRCLS_NAMES", 	"SHARE_CLASS_NAMES");
 define("TBL_PRICES", 		"PRIMARY_SHARE_CLASS_PRICES");
+define("TBL_SHARES", 		"SHARES_OUTSTANDING");
 
 define("COL_STMT_ID", 		"STD_STATEMENT_ID");
 define("COL_SIMFIN_ID", 	"SIMFIN_ID");
@@ -166,6 +173,7 @@ define("COL_SHRCLS_NAME", 	"CLASS_NAME");
 define("COL_PRICE_DATE", 	"CLOSING_DATE");
 define("COL_PRICE", 		"CLOSING_PRICE");
 define("COL_SPLIT_COEF", 	"SPLIT_COEFFICIENT");
+define("COL_SHARES", 		"SHARES_OUTSTANDING");
 
 define("SQL_TRUE", 			"TRUE");
 define("SQL_FALSE", 		"FALSE");
@@ -481,7 +489,7 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 				case KEY_DISPLAY:
 					$display = $val;
 				break;
-				case KEY_VALUE:
+				case KEY_VAL_CHOSEN:
 					$value = $val;
 				break;
 			}
@@ -1073,6 +1081,46 @@ function getPeriodBegDate($db, $simfinId, $fy, $period){
 	$date = new DateTime($dateString);
 
 	return $date->format("Y-m-d");
+}
+
+function insertSharesOutstanding($db, $simfinId, $fyear, $period, $shares){
+
+	$periodId  = getPeriodId($db, $period);
+	$pdBegDate = getPeriodBegDate($db, $simfinId, $fyear, $period);
+	$pdEndDate = getPeriodEndDate($db, $simfinId, $fyear, $period);
+
+	if($periodId  === false
+	|| $pdBegDate === false
+	|| $pdEndDate === false){
+
+		$message  = "invalid date/period params for shares outstanding ";
+		$message .= "periodId ".$periodId." begin date ".$pdBegDate." ";
+		$message .= "end date ".$pdEndDate;
+
+		logError($message);
+
+		return false;
+	}
+
+	$sql  = "REPLACE INTO ".TBL_SHARES." (";
+	$sql .= COL_SIMFIN_ID.", ".COL_FYEAR.", ";
+	$sql .= COL_PERIOD_ID.", ".COL_BEG_DATE.", ";
+	$sql .= COL_END_DATE.", ".COL_SHARES.") ";
+	$sql .= "VALUES (".$simfinId.", ".$fyear.", ";
+	$sql .= $periodId.", '".$pdBegDate."', '";
+	$sql .= $pdEndDate."', ".$shares.");";
+
+	if($db->query($sql) !== true){
+
+		$message  = "could not insert shares outstanding, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	return true;
 }
 
 ?>

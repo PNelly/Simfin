@@ -41,7 +41,7 @@ function logMessage($message, $path, $maxLines){
 
 	$logTime = "[".$year."-".$month."-".$day." ".$hour.":".$min.":".$sec."]";
 
-	$message = $logTime." ".$message;
+	$message = $logTime." ".$message."\n";
 
 	// enforce length constraint //
 
@@ -65,7 +65,7 @@ function logMessage($message, $path, $maxLines){
 
 	// notify stdout //
 
-	echo($message."\n");
+	echo($message);
 }
 
 ?>

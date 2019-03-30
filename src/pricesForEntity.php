@@ -138,6 +138,10 @@ function insertSharePricesForEntity($db, $entityId){
 		}
 	}
 
+	$message = "Prices for entity - completed insertions for ".$entityId;
+
+	logActivity($message);
+
 	return true;	
 }
 
