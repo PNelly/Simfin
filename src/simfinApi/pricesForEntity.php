@@ -2,9 +2,9 @@
 
 error_reporting(-1);
 
-require_once("simfinDB.php");
-require_once("simfinCreds.php");
-require_once("logging.php");
+require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
+require_once(dirname(__FILE__,2)."/db/simfinDB.php");
+require_once(dirname(__FILE__,2)."/util/logging.php");
 
 function insertSharePricesForEntity($db, $entityId){
 

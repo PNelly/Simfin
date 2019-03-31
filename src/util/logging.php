@@ -1,6 +1,6 @@
 <?php
 
-require_once("config.php");
+require_once(dirname(__FILE__,2)."/cfg/config.php");
 
 function prepend($message, $path){
 

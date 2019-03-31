@@ -2,9 +2,9 @@
 
 error_reporting(-1);
 
-require_once("simfinCreds.php");
-require_once("simfinDB.php");
-require_once("logging.php");
+require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
+require_once(dirname(__FILE__,2)."/db/simfinDB.php");
+require_once(dirname(__FILE__,2)."/util/logging.php");
 
 require_once("seedEntities.php");
 require_once("supplementEntityDetails.php");
@@ -84,6 +84,16 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 		continue;
 	}
 
+	$prices = insertSharePricesForEntity($db, $entityIds[$idx]);
+
+	if(!$prices){
+
+		logError("Build database - prices update failed for ".$entityIds[$idx]);
+
+		$db->rollback();
+		continue;
+	}
+
 	$shares = insertSharesOutstandingForEntity($db, $entityIds[$idx]);
 
 	if(!$shares){
@@ -99,16 +109,6 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 	if(!$sheets){
 
 		logError("Build database - sheets update failed for ".$entityIds[$idx]);
-
-		$db->rollback();
-		continue;
-	}
-
-	$prices = insertSharePricesForEntity($db, $entityIds[$idx]);
-
-	if(!$prices){
-
-		logError("Build database - prices update failed for ".$entityIds[$idx]);
 
 		$db->rollback();
 		continue;
