@@ -3,3 +3,4 @@ apiKey.php
 output-semicolon-wide.csv
 activityLog.txt
 errorLog.txt
+phpinfo.txt

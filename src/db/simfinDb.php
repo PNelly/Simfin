@@ -346,7 +346,7 @@ function getIndustryId($db, $industryCode, $industryName){
 			: SQL_NULL;
 }
 
-function insertStatementMetadata($db, $simfinId, $statementTypeId,
+function insertStdStmtMeta($db, $simfinId, $statementTypeId,
 	$fyear,
 	$periodId,
 	$calculated,
@@ -394,7 +394,7 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 			: SQL_NULL;
 }
 
-function clearCalculationScheme($db, $statementId){
+function clearStdCalcScheme($db, $statementId){
 
 	$sql  = "DELETE FROM ".TBL_STD_SCHEMES." ";
 	$sql .= "WHERE ".COL_STD_STMT_ID." = ".$statementId;
@@ -412,7 +412,7 @@ function clearCalculationScheme($db, $statementId){
 	return true;
 }
 
-function insertCalculationScheme($db, $statementId, $scheme){
+function insertStdCalcScheme($db, $statementId, $scheme){
 
 	for($idx = 0; $idx < count($scheme); ++$idx){
 
@@ -459,7 +459,7 @@ function insertCalculationScheme($db, $statementId, $scheme){
 	return true;
 }
 
-function insertStatementLineItems($db, $statementId, $lineItems){
+function insertStdLineItems($db, $statementId, $lineItems){
 
 	$valueIds 		= array();
 
@@ -489,7 +489,7 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 					$universalId = $val;
 				break;
 				case KEY_NAME:
-					$valueNameId = getStatementValueNameId($db, $val);
+					$valueNameId = getStdStmtValNameId($db, $val);
 					$valueIds[$valueNameId] = $valueNameId;
 				break;
 				case KEY_PARENT:
@@ -555,7 +555,7 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 	return true;
 }
 
-function reconcileStatements($db, $simId, $statementIds){
+function reconcileStdStmts($db, $simId, $statementIds){
 
 	// remove any statements not received in last api call
 
@@ -708,7 +708,7 @@ function getPeriodName($db, $periodId){
 		return false;
 }
 
-function getStatementValueNameId($db, $name){
+function getStdStmtValNameId($db, $name){
 
 	$name = $db->real_escape_string($name);
 
@@ -807,7 +807,7 @@ function getShareClassNameId($db, $name, $typeId){
 			: SQL_NULL;
 }
 
-function statementMetaExists($db, $simfinId, $type, $fyear, $period){
+function stdStmtMetaExists($db, $simfinId, $type, $fyear, $period){
 
 	$typeId 	= getStatementTypeId($db, $type);
 	$periodId 	= getPeriodId($db, $period);
@@ -901,7 +901,7 @@ function getEntityIds($db){
 	return $ids;
 }
 
-function getStmtMetaDenormalized($db, $simfinId){
+function getStdStmtMetaDnrmlzd($db, $simfinId){
 
 	$sql  = "SELECT ".COL_STMT_NAME.", ";
 	$sql .= COL_FYEAR.", ".COL_PERIOD_NAME." ";

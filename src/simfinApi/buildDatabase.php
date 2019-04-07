@@ -8,7 +8,7 @@ require_once(dirname(__FILE__,2)."/util/logging.php");
 
 require_once("seedEntities.php");
 require_once("supplementEntityDetails.php");
-require_once("sheetsForEntity.php");
+require_once("stdSheetsForEntity.php");
 require_once("pricesForEntity.php");
 require_once("sharesForEntity.php");
 
@@ -104,11 +104,11 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 		continue;
 	}
 
-	$sheets = insertSheetsForEntity($db, $entityIds[$idx], $replaceData);
+	$sheets = insertStdSheets($db, $entityIds[$idx], $replaceData);
 
 	if(!$sheets){
 
-		logError("Build database - sheets update failed for ".$entityIds[$idx]);
+		logError("Build database - standardized sheets update failed for ".$entityIds[$idx]);
 
 		$db->rollback();
 		continue;
