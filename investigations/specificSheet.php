@@ -8,10 +8,17 @@ $url = "https://simfin.com/api/v1/companies/id/18/statements/standardised?stype=
 
 $url = "https://simfin.com/api/v1/companies/id/18/ratios?api-key=".$apiKey;
 
+echo($url."\n");
+
 $curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 $response = curl_exec($curl);
+
+if(curl_errno($curl)){
+	echo(curl_error($curl)."\n");
+	exit;
+}
 
 $responseArray = json_decode($response, true);
 

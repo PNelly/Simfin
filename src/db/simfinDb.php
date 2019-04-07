@@ -119,24 +119,29 @@ define("KEY_VALUE", 		"value");
 define("VAL_DILUTED", 		"common-outstanding-diluted");
 define("VAL_PERIOD", 		"period");
 
-define("TBL_STMT_META", 	"STD_STATEMENT_META");
-define("TBL_SCHEMES", 		"STD_STATEMENT_CALCULATION_SCHEMES");
-define("TBL_VALUES", 		"STD_STATEMENT_VALUES");
+define("TBL_STD_STMT_META", "STD_STATEMENT_META");
+define("TBL_RPT_STMT_META", "RPT_STATEMENT_META");
+define("TBL_STD_SCHEMES", 	"STD_STATEMENT_CALCULATION_SCHEMES");
+define("TBL_RPT_SCHEMES", 	"RPT_STATEMENT_CALCULATION_SCHEMES");
+define("TBL_STD_VALUES", 	"STD_STATEMENT_VALUES");
+define("TBL_RPT_VALUES", 	"RPT_STATEMENT_VALUES");
 define("TBL_TEMPLATES", 	"STD_INDUSTRY_TEMPLATES");
-define("TBL_STMT_TYPES", 	"STD_STATEMENT_TYPES");
+define("TBL_STMT_TYPES", 	"STATEMENT_TYPES");
 define("TBL_PERIODS", 		"PERIODS");
-define("TBL_VAL_TYPES", 	"STD_STATEMENT_VALUE_NAMES");
+define("TBL_STD_VAL_TYPES", "STD_STATEMENT_VALUE_NAMES");
+define("TBL_RPT_VAL_TYPES", "RPT_STATEMENT_VALUE_NAME");
 define("TBL_ENTITIES", 		"ENTITIES");
-define("TBL_SECTOR", 		"STD_SECTORS");
-define("TBL_INDUSTRY", 		"STD_INDUSTRIES");
+define("TBL_SECTOR", 		"SECTORS");
+define("TBL_INDUSTRY", 		"INDUSTRIES");
 define("TBL_SHRCLS_TYPES", 	"SHARE_CLASS_TYPES");
 define("TBL_SHRCLS_NAMES", 	"SHARE_CLASS_NAMES");
 define("TBL_PRICES", 		"PRIMARY_SHARE_CLASS_PRICES");
 define("TBL_SHARES", 		"SHARES_OUTSTANDING");
 
-define("COL_STMT_ID", 		"STD_STATEMENT_ID");
+define("COL_STD_STMT_ID", 	"STD_STATEMENT_ID");
+define("COL_RPT_STMT_ID", 	"RPT_STATEMENT_ID");
 define("COL_SIMFIN_ID", 	"SIMFIN_ID");
-define("COL_STMT_TYPE_ID", 	"STD_STATEMENT_TYPE_ID");
+define("COL_STMT_TYPE_ID", 	"STATEMENT_TYPE_ID");
 define("COL_FYEAR", 		"FYEAR");
 define("COL_PERIOD_ID", 	"PERIOD_ID");
 define("COL_BEG_DATE", 		"PERIOD_BEGIN_DATE");
@@ -147,14 +152,18 @@ define("COL_TEMPLATE_NAME", "STD_INDUSTRY_TEMPLATE_NAME");
 define("COL_SIGN", 			"SIGN");
 define("COL_TID", 			"TEMPLATE_ID");
 define("COL_UID", 			"UNIVERSAL_ID");
-define("COL_NAME_ID", 		"STD_NAME_ID");
+define("COL_STD_NAME_ID", 	"STD_NAME_ID");
+define("COL_RPT_NAME_ID", 	"RPT_NAME_ID");
 define("COL_PARENT_ID", 	"PARENT_TEMPLATE_ID");
 define("COL_DISPLAY", 		"DISPLAY_TYPICAL");
-define("COL_VALUE", 		"CHOSEN_VALUE");
-define("COL_STMT_NAME", 	"STD_STATEMENT_NAME");
+define("COL_STD_VALUE", 	"CHOSEN_VALUE");
+define("COL_RPT_VALUE", 	"VALUE");
+define("COL_STMT_NAME", 	"STATEMENT_NAME");
 define("COL_PERIOD_NAME", 	"PERIOD_NAME");
-define("COL_VAL_ID", 		"VALUE_ID");
-define("COL_VAL_NAME", 		"VALUE_NAME");
+define("COL_STD_VAL_ID", 	"VALUE_ID");
+define("COL_RPT_VAL_ID", 	"VALUE_ID");
+define("COL_STD_VAL_NM", 	"VALUE_NAME");
+define("COL_RPT_VAL_NM", 	"VALUE_NAME");
 define("COL_SECTOR_ID", 	"SECTOR_ID");
 define("COL_SECTOR_CODE", 	"SECTOR_CODE");
 define("COL_SECTOR_NAME", 	"SECTOR_NAME");
@@ -362,7 +371,7 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 	// Use of REPLACE INTO acceptable here because related
 	// statement values will be updated shortly after
 
-	$sql  = "REPLACE INTO ".TBL_STMT_META." ";
+	$sql  = "REPLACE INTO ".TBL_STD_STMT_META." ";
 	$sql .= "(".COL_SIMFIN_ID.", ".COL_STMT_TYPE_ID.", ".COL_FYEAR.", ";
 	$sql .= COL_PERIOD_ID.", ".COL_BEG_DATE.", ".COL_END_DATE.", ";
 	$sql .= COL_CALCULATED.", ".COL_TEMPLATE_ID.") ";
@@ -387,8 +396,8 @@ function insertStatementMetadata($db, $simfinId, $statementTypeId,
 
 function clearCalculationScheme($db, $statementId){
 
-	$sql  = "DELETE FROM ".TBL_SCHEMES." ";
-	$sql .= "WHERE ".COL_STMT_ID." = ".$statementId;
+	$sql  = "DELETE FROM ".TBL_STD_SCHEMES." ";
+	$sql .= "WHERE ".COL_STD_STMT_ID." = ".$statementId;
 
 	if($db->query($sql) !== true){
 
@@ -430,8 +439,8 @@ function insertCalculationScheme($db, $statementId, $scheme){
 
 		$periodId = getPeriodId($db, $pd);
 
-		$sql  = "REPLACE INTO ".TBL_SCHEMES." ";
-		$sql .= "(".COL_STMT_ID.", ".COL_FYEAR.", ";
+		$sql  = "REPLACE INTO ".TBL_STD_SCHEMES." ";
+		$sql .= "(".COL_STD_STMT_ID.", ".COL_FYEAR.", ";
 		$sql .= COL_PERIOD_ID.", ".COL_SIGN.") ";
 		$sql .= " VALUES (".$statementId.", ";
 		$sql .= $fy.", ".$periodId.", ".$sn.");";
@@ -497,11 +506,11 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 
 		if($value !== null){
 
-			$sql  = "REPLACE INTO ".TBL_VALUES." ";
-			$sql .= "(".COL_STMT_ID.", ".COL_TID.", ";
-			$sql .= COL_UID.", ".COL_NAME_ID.", ";
+			$sql  = "REPLACE INTO ".TBL_STD_VALUES." ";
+			$sql .= "(".COL_STD_STMT_ID.", ".COL_TID.", ";
+			$sql .= COL_UID.", ".COL_STD_NAME_ID.", ";
 			$sql .= COL_PARENT_ID.", ".COL_DISPLAY.", ";
-			$sql .= COL_VALUE.") VALUES (";
+			$sql .= COL_STD_VALUE.") VALUES (";
 			$sql .= $statementId.", ".$templateId.", ";
 			$sql .= $universalId.", ".$valueNameId.", ";
 			$sql .= $parentId.", ".$display.", ";
@@ -521,9 +530,9 @@ function insertStatementLineItems($db, $statementId, $lineItems){
 
 	// remove any line items not present in the api response
 
-	$sql  = "DELETE FROM ".TBL_VALUES." ";
-	$sql .= "WHERE ".COL_STMT_ID." = ".$statementId." ";
-	$sql .= "AND ".COL_NAME_ID." NOT IN ( ";
+	$sql  = "DELETE FROM ".TBL_STD_VALUES." ";
+	$sql .= "WHERE ".COL_STD_STMT_ID." = ".$statementId." ";
+	$sql .= "AND ".COL_STD_NAME_ID." NOT IN ( ";
 
 	$keys = array_keys($valueIds);
 
@@ -550,9 +559,9 @@ function reconcileStatements($db, $simId, $statementIds){
 
 	// remove any statements not received in last api call
 
-	$sql  = "DELETE FROM ".TBL_STMT_META. " ";
+	$sql  = "DELETE FROM ".TBL_STD_STMT_META. " ";
 	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simId." ";
-	$sql .= "AND ".COL_STMT_ID." NOT IN ( ";
+	$sql .= "AND ".COL_STD_STMT_ID." NOT IN ( ";
 
 	$keys = array_keys($statementIds);
 
@@ -703,9 +712,9 @@ function getStatementValueNameId($db, $name){
 
 	$name = $db->real_escape_string($name);
 
-	$sql  = "SELECT ".COL_VAL_ID." ";
-	$sql .= "FROM ".TBL_VAL_TYPES." ";
-	$sql .= "WHERE ".COL_VAL_NAME." = ";
+	$sql  = "SELECT ".COL_STD_VAL_ID." ";
+	$sql .= "FROM ".TBL_STD_VAL_TYPES." ";
+	$sql .= "WHERE ".COL_STD_VAL_NM." = ";
 	$sql .= "'".$name."';";
 
 	$result = $db->query($sql);
@@ -713,8 +722,8 @@ function getStatementValueNameId($db, $name){
 	if($result->num_rows > 0)
 		return (($result->fetch_row())[0]);
 
-	$sql  = "INSERT INTO ".TBL_VAL_TYPES." ";
-	$sql .= "(".COL_VAL_NAME.") ";
+	$sql  = "INSERT INTO ".TBL_STD_VAL_TYPES." ";
+	$sql .= "(".COL_STD_VAL_NM.") ";
 	$sql .= "VALUES ('".$name."');";
 
 	if($db->query($sql) !== true){
@@ -803,8 +812,8 @@ function statementMetaExists($db, $simfinId, $type, $fyear, $period){
 	$typeId 	= getStatementTypeId($db, $type);
 	$periodId 	= getPeriodId($db, $period);
 
-	$sql  = "SELECT ".COL_STMT_ID." ";
-	$sql .= "FROM ".TBL_STMT_META." ";
+	$sql  = "SELECT ".COL_STD_STMT_ID." ";
+	$sql .= "FROM ".TBL_STD_STMT_META." ";
 	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simfinId." ";
 	$sql .= "AND ".COL_STMT_TYPE_ID." = ".$typeId." ";
 	$sql .= "AND ".COL_FYEAR." = ".$fyear." ";
@@ -896,14 +905,14 @@ function getStmtMetaDenormalized($db, $simfinId){
 
 	$sql  = "SELECT ".COL_STMT_NAME.", ";
 	$sql .= COL_FYEAR.", ".COL_PERIOD_NAME." ";
-	$sql .= "FROM ".TBL_STMT_META." ";
+	$sql .= "FROM ".TBL_STD_STMT_META." ";
 	$sql .= "INNER JOIN ".TBL_STMT_TYPES." ON ";
 	$sql .= TBL_STMT_TYPES.".".COL_STMT_TYPE_ID;
-	$sql .= " = ".TBL_STMT_META.".".COL_STMT_TYPE_ID." ";
+	$sql .= " = ".TBL_STD_STMT_META.".".COL_STMT_TYPE_ID." ";
 	$sql .= "INNER JOIN ".TBL_PERIODS." ON ";
 	$sql .= TBL_PERIODS.".".COL_PERIOD_ID." = ";
-	$sql .= TBL_STMT_META.".".COL_PERIOD_ID." ";
-	$sql .= "WHERE ".TBL_STMT_META.".".COL_SIMFIN_ID;
+	$sql .= TBL_STD_STMT_META.".".COL_PERIOD_ID." ";
+	$sql .= "WHERE ".TBL_STD_STMT_META.".".COL_SIMFIN_ID;
 	$sql .= " = ".$simfinId.";";
 
 	$result = $db->query($sql);
