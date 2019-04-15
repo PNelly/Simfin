@@ -91,7 +91,9 @@ define("KEY_FYEAR", 		"fyear");
 define("KEY_SIGN", 			"sign");
 define("KEY_TID", 			"tid");
 define("KEY_UID", 			"uid");
-define("KEY_NAME", 			"standardisedName");
+define("KEY_STD_NAME", 		"standardisedName");
+define("KEY_RPT_NAME", 		"lineItemName");
+define("KEY_RPT_LINE_TYPE", "lineItemType");
 define("KEY_PARENT", 		"parent_tid");
 define("KEY_DISPLAY", 		"displayLevel");
 define("KEY_VAL_CHOSEN", 	"valueChosen");
@@ -115,6 +117,11 @@ define("KEY_SPLIT_COEF", 	"splitCoef");
 define("KEY_SHARE_FIGURE", 	"figure");
 define("KEY_MEASURE", 		"measure");
 define("KEY_VALUE", 		"value");
+define("KEY_METADATA", 		"metaData");
+define("KEY_FILING_DATE", 	"filingDate");
+define("KEY_PUBLISHED_DATE","firstPublished");
+define("KEY_RESTATED", 		"restated");
+define("KEY_SOURCE_URL", 	"sourceUrl");
 
 define("VAL_DILUTED", 		"common-outstanding-diluted");
 define("VAL_PERIOD", 		"period");
@@ -128,8 +135,9 @@ define("TBL_RPT_VALUES", 	"RPT_STATEMENT_VALUES");
 define("TBL_TEMPLATES", 	"STD_INDUSTRY_TEMPLATES");
 define("TBL_STMT_TYPES", 	"STATEMENT_TYPES");
 define("TBL_PERIODS", 		"PERIODS");
-define("TBL_STD_VAL_TYPES", "STD_STATEMENT_VALUE_NAMES");
-define("TBL_RPT_VAL_TYPES", "RPT_STATEMENT_VALUE_NAME");
+define("TBL_STD_VAL_NAMES", "STD_STATEMENT_VALUE_NAMES");
+define("TBL_RPT_VAL_NAMES", "RPT_STATEMENT_VALUE_NAMES");
+define("TBL_RPT_VAL_TYPES", "RPT_LINE_ITEM_TYPES");
 define("TBL_ENTITIES", 		"ENTITIES");
 define("TBL_SECTOR", 		"SECTORS");
 define("TBL_INDUSTRY", 		"INDUSTRIES");
@@ -147,6 +155,10 @@ define("COL_PERIOD_ID", 	"PERIOD_ID");
 define("COL_BEG_DATE", 		"PERIOD_BEGIN_DATE");
 define("COL_END_DATE", 		"PERIOD_END_DATE");
 define("COL_CALCULATED", 	"CALCULATED");
+define("COL_RESTATED", 		"RESTATED");
+define("COL_PUB_DATE", 		"FIRST_PUBLISHED_DATE");
+define("COL_FILE_DATE", 	"FILING_DATE");
+define("COL_SRC_URL", 		"SOURCE_URL");
 define("COL_TEMPLATE_ID", 	"STD_INDUSTRY_TEMPLATE_ID");
 define("COL_TEMPLATE_NAME", "STD_INDUSTRY_TEMPLATE_NAME");
 define("COL_SIGN", 			"SIGN");
@@ -154,6 +166,8 @@ define("COL_TID", 			"TEMPLATE_ID");
 define("COL_UID", 			"UNIVERSAL_ID");
 define("COL_STD_NAME_ID", 	"STD_NAME_ID");
 define("COL_RPT_NAME_ID", 	"RPT_NAME_ID");
+define("COL_RPT_VALTYPE_ID","RPT_LINE_ITEM_TYPE_ID");
+define("COL_RPT_VALTYPE", 	"RPT_LINE_ITEM_TYPE");
 define("COL_PARENT_ID", 	"PARENT_TEMPLATE_ID");
 define("COL_DISPLAY", 		"DISPLAY_TYPICAL");
 define("COL_STD_VALUE", 	"CHOSEN_VALUE");
@@ -381,7 +395,55 @@ function insertStdStmtMeta($db, $simfinId, $statementTypeId,
 
 	if($db->query($sql) !== true){
 
-		$message  = "Statement meta insert failed, statement: ";
+		$message  = "Standarized statement meta insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	return 	( $db->insert_id > 0)
+			? $db->insert_id
+			: SQL_NULL;
+}
+
+function insertRptStmtMeta($db, $simfinId, $statementTypeId,
+	$fyear, $periodId, $calculated, $restated, $publishDate,
+	$fileDate, $sourceUrl){
+
+	$pdName  = getPeriodName($db, $periodId);
+
+	$begDate = getPeriodBegDate($db, $simfinId, $fyear, $pdName);
+	$endDate = getPeriodEndDate($db, $simfinId, $fyear, $pdName);
+
+	if($begDate === false || $endDate === false){
+
+		$message  = "Could not establish statement beg/end dates ";
+		$message .= "period id ".$periodId." bd ".$begDate." ed ";
+		$message .= $endDate;
+
+		logError($message);
+
+		return false;
+	}
+
+	// Use of REPLACE INTO acceptable here because related
+	// statement values will be updated shortly after
+
+	$sql  = "REPLACE INTO ".TBL_RPT_STMT_META." ";
+	$sql .= "(".COL_SIMFIN_ID.", ".COL_STMT_TYPE_ID.", ".COL_FYEAR.", ";
+	$sql .= COL_PERIOD_ID.", ".COL_BEG_DATE.", ".COL_END_DATE.", ";
+	$sql .= COL_CALCULATED.", ".COL_RESTATED.", ".COL_PUB_DATE.", ";
+	$sql .= COL_FILE_DATE.", ".COL_SRC_URL.") ";
+	$sql .= "VALUES (".$simfinId.", ".$statementTypeId.", ";
+	$sql .= $fyear.", ".$periodId.", '".$begDate."', '".$endDate."', ";
+	$sql .= $calculated.", ".$restated.", '".$publishDate."', '";
+	$sql .= $fileDate."', '".$sourceUrl."');";
+
+	if($db->query($sql) !== true){
+
+		$message  = "Reported statement meta insert failed, statement: ";
 		$message .= "<".$sql."> error: <".$db->error.">";
 
 		logError($message);
@@ -401,7 +463,25 @@ function clearStdCalcScheme($db, $statementId){
 
 	if($db->query($sql) !== true){
 
-		$message  = "calculation scheme clear failed, statement: ";
+		$message  = "std calc scheme clear failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	return true;
+}
+
+function clearRptCalcScheme($db, $statementId){
+
+	$sql  = "DELETE FROM ".TBL_RPT_SCHEMES." ";
+	$sql .= "WHERE ".COL_RPT_STMT_ID." = ".$statementId;
+
+	if($db->query($sql) !== true){
+
+		$message  = "rpt calc scheme clear failed, statement: ";
 		$message .= "<".$sql."> error: <".$db->error.">";
 
 		logError($message);
@@ -447,7 +527,54 @@ function insertStdCalcScheme($db, $statementId, $scheme){
 
 		if($db->query($sql) !== true){
 
-			$message  = "calculation scheme element insert failed, statement: ";
+			$message  = "std calc scheme element insert failed, statement: ";
+			$message .= "<".$sql."> error: <".$db->error.">";
+
+			logError($message);
+
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function insertRptCalcScheme($db, $statementId, $scheme){
+
+	for($idx = 0; $idx < count($scheme); ++$idx){
+
+		$schemeElement = $scheme[$idx];
+
+		$keys = array_keys($schemeElement);
+
+		$pd = SQL_NULL;
+		$fy = SQL_NULL;
+		$sn = SQL_NULL;
+
+		for($k = 0; $k < count($keys); ++$k){
+
+			$key = $keys[$k];
+			$val = $schemeElement[$key];
+
+			switch($key){
+
+				case KEY_PERIOD: 	$pd = $val; 	break;
+				case KEY_FYEAR: 	$fy = $val; 	break;
+				case KEY_SIGN: 		$sn = $val; 	break;
+			}
+		}
+
+		$periodId = getPeriodId($db, $pd);
+
+		$sql  = "REPLACE INTO ".TBL_RPT_SCHEMES." ";
+		$sql .= "(".COL_RPT_STMT_ID.", ".COL_FYEAR.", ";
+		$sql .= COL_PERIOD_ID.", ".COL_SIGN.") ";
+		$sql .= " VALUES (".$statementId.", ";
+		$sql .= $fy.", ".$periodId.", ".$sn.");";
+
+		if($db->query($sql) !== true){
+
+			$message  = "rpt calc scheme element insert failed, statement: ";
 			$message .= "<".$sql."> error: <".$db->error.">";
 
 			logError($message);
@@ -488,7 +615,7 @@ function insertStdLineItems($db, $statementId, $lineItems){
 				case KEY_UID:
 					$universalId = $val;
 				break;
-				case KEY_NAME:
+				case KEY_STD_NAME:
 					$valueNameId = getStdStmtValNameId($db, $val);
 					$valueIds[$valueNameId] = $valueNameId;
 				break;
@@ -544,7 +671,89 @@ function insertStdLineItems($db, $statementId, $lineItems){
 
 	if($db->query($sql) !== true){
 
-		$message  = "line item reconciliation failed, statement: ";
+		$message  = "std line item reconciliation failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	return true;
+}
+
+function insertRptLineItems($db, $statementId, $lineItems){
+
+	$valueIds 		= array();
+
+	for($idx = 0; $idx < count($lineItems); ++$idx){
+
+		$lineItem 		= $lineItems[$idx];
+		$keys 			= array_keys($lineItem);
+
+		$valueNameId 	= SQL_NULL;
+		$value 			= SQL_NULL;
+		$valueTypeId 	= SQL_NULL;
+
+		for($k = 0; $k < count($keys); ++$k){
+
+			$key = $keys[$k];
+			$val = $lineItem[$key];
+
+			switch($key){
+
+				case KEY_RPT_NAME:
+					$valueNameId = getRptStmtValNameId($db, $val);
+					$valueIds[$valueNameId] = $valueNameId;
+				break;
+
+				case KEY_RPT_LINE_TYPE:
+					$valueTypeId = getRptStmtValTypeId($db, $val);
+				break;
+
+				case KEY_VALUE:
+					$value 		 = $val;
+				break;
+			}
+		}
+
+		if($value !== SQL_NULL){
+
+			$sql  = "REPLACE INTO ".TBL_RPT_VALUES." ";
+			$sql .= "(".COL_RPT_STMT_ID.", ".COL_RPT_NAME_ID.", ";
+			$sql .= COL_RPT_VALTYPE_ID.", ".COL_RPT_VALUE.") ";
+			$sql .= "VALUES (".$statementId.", ".$valueNameId.", ";
+			$sql .= $valueTypeId.", ".$value.");";
+
+			if($db->query($sql) !== true){
+
+				$message  = "rpt line item insert failed, statement: ";
+				$message .= "<".$sql."> error: <".$db->error.">";
+
+				logError($message);
+
+				return false;
+			}
+		}
+	}
+
+	// remove any line items not present in the api response
+
+	$sql  = "DELETE FROM ".TBL_RPT_VALUES." ";
+	$sql .= "WHERE ".COL_RPT_STMT_ID." = ".$statementId." ";
+	$sql .= "AND ".COL_RPT_NAME_ID." NOT IN ( ";
+
+	$keys = array_keys($valueIds);
+
+	for($k = 0; $k < count($keys); ++$k)
+		if($k == count($keys) -1)
+			$sql .= ($keys[$k]).");";
+		else 
+			$sql .= ($keys[$k]).", ";
+
+	if($db->query($sql) !== true){
+
+		$message  = "rpt line item reconciliation failed, statement: ";
 		$message .= "<".$sql."> error: <".$db->error.">";
 
 		logError($message);
@@ -573,7 +782,7 @@ function reconcileStdStmts($db, $simId, $statementIds){
 
 	if($db->query($sql) !== true){
 
-		$message  = "sheet reconciliation failed, statement";
+		$message  = "std sheet reconciliation failed, statement";
 		$message .= "<".$sql."> error: <".$db->error.">";
 
 		logError($message);
@@ -582,6 +791,35 @@ function reconcileStdStmts($db, $simId, $statementIds){
 	}
 
 	return true;
+}
+
+function reconcileRptStmts($db, $simId, $statementIds){
+
+	// remove any statements not received in last api call
+
+	$sql  = "DELETE FROM ".TBL_RPT_STMT_META. " ";
+	$sql .= "WHERE ".COL_SIMFIN_ID." = ".$simId." ";
+	$sql .= "AND ".COL_RPT_STMT_ID." NOT IN ( ";
+
+	$keys = array_keys($statementIds);
+
+	for($k = 0; $k < count($keys); ++$k)
+		if($k == count($keys) -1)
+			$sql .= ($keys[$k]).");";
+		else
+			$sql .= ($keys[$k]).", ";
+
+	if($db->query($sql) !== true){
+
+		$message  = "rpt sheet reconciliation failed, statement";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	return true;	
 }
 
 function getIndustryTemplateId($db, $templateName){
@@ -713,7 +951,7 @@ function getStdStmtValNameId($db, $name){
 	$name = $db->real_escape_string($name);
 
 	$sql  = "SELECT ".COL_STD_VAL_ID." ";
-	$sql .= "FROM ".TBL_STD_VAL_TYPES." ";
+	$sql .= "FROM ".TBL_STD_VAL_NAMES." ";
 	$sql .= "WHERE ".COL_STD_VAL_NM." = ";
 	$sql .= "'".$name."';";
 
@@ -722,7 +960,7 @@ function getStdStmtValNameId($db, $name){
 	if($result->num_rows > 0)
 		return (($result->fetch_row())[0]);
 
-	$sql  = "INSERT INTO ".TBL_STD_VAL_TYPES." ";
+	$sql  = "INSERT INTO ".TBL_STD_VAL_NAMES." ";
 	$sql .= "(".COL_STD_VAL_NM.") ";
 	$sql .= "VALUES ('".$name."');";
 
@@ -738,6 +976,72 @@ function getStdStmtValNameId($db, $name){
 
 	return 	( $db->insert_id > 0)
 			? $db->insert_id 
+			: SQL_NULL;
+}
+
+function getRptStmtValNameId($db, $name){
+
+	$name = $db->real_escape_string($name);
+
+	$sql  = "SELECT ".COL_RPT_VAL_ID." ";
+	$sql .= "FROM ".TBL_RPT_VAL_NAMES." ";
+	$sql .= "WHERE ".COL_RPT_VAL_NM." = ";
+	$sql .= "'".$name."';";
+
+	$result = $db->query($sql);
+
+	if($result->num_rows > 0)
+		return (($result->fetch_row())[0]);
+
+	$sql  = "INSERT INTO ".TBL_RPT_VAL_NAMES." ";
+	$sql .= "(".COL_RPT_VAL_NM.") ";
+	$sql .= "VALUES ('".$name."');";
+
+	if($db->query($sql) !== true){
+
+		$message  = "Value name insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return SQL_NULL;
+	}
+
+	return  ( $db->insert_id > 0)
+			? $db->insert_id
+			: SQL_NULL;
+}
+
+function getRptStmtValTypeId($db, $type){
+
+	$name = $db->real_escape_string($type);
+
+	$sql  = "SELECT ".COL_RPT_VALTYPE_ID." ";
+	$sql .= "FROM ".TBL_RPT_VAL_TYPES." ";
+	$sql .= "WHERE ".COL_RPT_VALTYPE." = ";
+	$sql .= "'".$type."';";
+
+	$result = $db->query($sql);
+
+	if($result->num_rows > 0)
+		return (($result->fetch_row())[0]);
+
+	$sql  = "INSERT INTO ".TBL_RPT_VAL_TYPES." ";
+	$sql .= "(".COL_RPT_VALTYPE.") ";
+	$sql .= "VALUES ('".$type."');";
+
+	if($db->query($sql) !== true){
+
+		$message  = "Rpt line item type insert failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+	}
+
+	return  ( $db->insert_id > 0)
+			? $db->insert_id
 			: SQL_NULL;
 }
 
@@ -929,6 +1233,37 @@ function getStdStmtMetaDnrmlzd($db, $simfinId){
 	} else {
 
 		return ($result->fetch_all(MYSQLI_ASSOC));
+	}
+}
+
+function getRptStmtMetaDnrmlzd($db, $simfinId){
+
+	$sql  = "SELECT ".COL_STMT_NAME.", ";
+	$sql .= COL_FYEAR.", ".COL_PERIOD_NAME." ";
+	$sql .= "FROM ".TBL_RPT_STMT_META." ";
+	$sql .= "INNER JOIN ".TBL_STMT_TYPES." ON ";
+	$sql .= TBL_STMT_TYPES.".".COL_STMT_TYPE_ID." ";
+	$sql .= " = ".TBL_RPT_STMT_META.".".COL_STMT_TYPE_ID." ";
+	$sql .= "INNER JOIN ".TBL_PERIODS." ON ";
+	$sql .= TBL_PERIODS.".".COL_PERIOD_ID." = ";
+	$sql .= TBL_RPT_STMT_META.".".COL_PERIOD_ID." ";
+	$sql .= "WHERE ".TBL_RPT_STMT_META.".".COL_SIMFIN_ID;
+	$sql .= " = ".$simfinId.";";
+
+	$result = $db->query($sql);
+
+	if($result === false){
+
+		$message  = "Rpt sheet data query failed, statement: ";
+		$message .= "<".$sql."> error: <".$db->error.">";
+
+		logError($message);
+
+		return false;
+
+	} else {
+
+		($result->fetch_all(MYSQLI_ASSOC));
 	}
 }
 

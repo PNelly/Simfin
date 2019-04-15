@@ -5,7 +5,7 @@ require_once("apiKey.php");
 $urlA = "https://simfin.com/api/v1/companies/id/";
 $urlB = "/statements/list?api-key=";
 
-$companyId = 111052;
+$companyId = 18;
 
 $url = $urlA.$companyId.$urlB.$apiKey;
 

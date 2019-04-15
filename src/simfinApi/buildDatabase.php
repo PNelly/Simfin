@@ -9,6 +9,7 @@ require_once(dirname(__FILE__,2)."/util/logging.php");
 require_once("seedEntities.php");
 require_once("supplementEntityDetails.php");
 require_once("stdSheetsForEntity.php");
+require_once("rptSheetsForEntity.php");
 require_once("pricesForEntity.php");
 require_once("sharesForEntity.php");
 
@@ -104,9 +105,19 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 		continue;
 	}
 
-	$sheets = insertStdSheets($db, $entityIds[$idx], $replaceData);
+	$rptSheets = insertRptSheets($db, $entityIds[$idx], $replaceData);
 
-	if(!$sheets){
+	if(!$rptSheets){
+
+		logError("Build database - reported sheets updated failed for ".$entityIds[$idx]);
+
+		$db->rollback();
+		continue;
+	}
+
+	$stdSheets = insertStdSheets($db, $entityIds[$idx], $replaceData);
+
+	if(!$stdSheets){
 
 		logError("Build database - standardized sheets update failed for ".$entityIds[$idx]);
 

@@ -1,28 +1,33 @@
 <?php
 
+// TODO:
+// insertRptLineItems
+// reconcileRptStmts
+// Key iteration for function arguments
+
 error_reporting(-1);
 
 require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
 require_once(dirname(__FILE__,2)."/db/simfinDB.php");
 require_once(dirname(__FILE__,2)."/util/logging.php");
 
-function stdSheetExists(
+function rptSheetExists(
 	$type,
 	$year,
 	$period,
-	& $existingSheets){
+	& $existing){
 
-	for($idx = 0; $idx < count($existingSheets); ++$idx){
+	for($idx = 0; $idx < count($existing); ++$idx){
 
-		$sheetMeta = $existingSheets[$idx];
+		$sheetMeta = $existing[$idx];
 
 		if($sheetMeta[COL_STMT_NAME] 	== $type
 		&& $sheetMeta[COL_FYEAR] 		== $year
 		&& $sheetMeta[COL_PERIOD_NAME] 	== $period){
 
-			unset($existingSheets[$idx]);
+			unset($existing[$idx]);
 
-			$existingSheets = array_values($existingSheets);
+			$existing = array_values($existing);
 
 			return true;
 		}
@@ -31,11 +36,11 @@ function stdSheetExists(
 	return false;
 }
 
-function insertStdSheets($db, $entityId, $replaceAllSheets){
+function insertRptSheets($db, $entityId, $replaceAllSheets){
 
 	$sheetsInserted = 0;
 
-	$existingSheets = getStdStmtMetaDnrmlzd($db, $entityId);
+	$existingSheets = getRptStmtMetaDnrmlzd($db, $entityId);
 
 	$apiIds = array();
 
@@ -53,7 +58,7 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 
 	if($httpCode != HTTP_SUCCESS){
 
-		$message  = "Standard sheets for entity - list curl failed ";
+		$message  = "Reported sheets for entity - list curl failed ";
 		$message .= $httpCode.", ".$url;
 
 		logError($message);
@@ -82,7 +87,7 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 			if(substr($pd, 0, 3) == TRAILING_TWELVE)
 				continue;
 
-			if(!$replaceAllSheets && stdSheetExists($type, $fy, $pd, $existingSheets)){
+			if(!$replaceAllSheets && rptSheetExists($type, $fy, $pd, $existingSheets)){
 
 				$message  = "Sheet type ".$type." fy ".$fy." pd ".$pd." ";
 				$message .= "already exists for entity ".$entityId.", skipping";
@@ -93,7 +98,7 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 			}
 
 			$shtUrlA = "https://simfin.com/api/v1/companies/id/";
-			$shtUrlB = "/statements/standardised?stype=";
+			$shtUrlB = "/statements/original?stype=";
 			$shtUrlC = "&ptype=";
 			$shtUrlD = "&fyear=";
 			$shtUrlE = "&api-key=";
@@ -115,7 +120,7 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 
 				if($httpCode == HTTP_SERVER_ERROR){
 
-					$message  = "Standard sheets for entity - server error ".$httpCode." ";
+					$message  = "Reported sheets for entity - server error ".$httpCode." ";
 					$message .= "on ".$shtUrl.", skipping sheet";
 
 					logActivity($message);
@@ -124,7 +129,7 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 
 				} else {
 
-					$message  = "Standard sheets for entity - sheet curl failed ";
+					$message  = "Reported sheets for entity - sheet curl failed ";
 					$message .= $httpCode.", ".$shtUrl;
 
 					logError($message);
@@ -140,7 +145,7 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 
 			if(!$periodId || !$statementTypeId){
 
-				$message  = "Standard sheets for entity - bad period id or stmt type id, ";
+				$message  = "Reported sheets for entity - bad period id or stmt type id, ";
 				$message .= "period id ".$periodId." type id ".$statementTypeId;
 
 				logError($message);
@@ -149,9 +154,13 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 			}
 
 			$hasCalculationScheme 	= false;
-			$industryTemplateId 	= SQL_NULL;
 			$calculated 			= SQL_NULL;
 			$shtDataKeys  			= array_keys($shtData);
+
+			$fileDate 				= SQL_NULL;
+			$publishDate 			= SQL_NULL;
+			$restated 				= SQL_NULL;
+			$sourceUrl 				= SQL_NULL;
 
 			for($k = 0; $k < count($shtDataKeys); ++$k){
 
@@ -165,35 +174,47 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 					case KEY_CALCULATED:
 						$calculated = ($shtData[$key]) ? SQL_TRUE : SQL_FALSE;
 					break;
-					case KEY_TEMPALTE:
-						$industryTemplateId = getIndustryTemplateId($db, $shtData[$key]);
+					case KEY_METADATA:
+
+						$metaArray = $shtData[$key][0];
+						$metaKeys  = array_keys($metaArray);
+
+						for($m = 0; $m < count($metaKeys); ++$m){
+
+							$metaKey = $metaKeys[$m];
+							$metaVal = $metaArray[$metaKey];
+
+							switch ($metaKey){
+
+								case KEY_FILING_DATE: 		$fileDate 		= $metaVal; break;
+								case KEY_PUBLISHED_DATE:  	$publishDate 	= $metaVal; break;
+								case KEY_SOURCE_URL: 		$sourceUrl 		= $metaVal; break;
+								case KEY_RESTATED: 			
+									$restated = ($metaVal) ? SQL_TRUE : SQL_FALSE;
+								break;
+							}
+						}
+
 					break;
 				}
 			}
 
-			if(!$industryTemplateId){
-
-				$message  = "Standard sheets for entity - invalid industry template id ";
-				$message .= $industryTemplateId;
-
-				logError($message);
-
-				return false;
-			}
-
-			$statementId = insertStdStmtMeta(
+			$statementId = insertRptStmtMeta(
 				$db,
 				$entityId,
 				$statementTypeId,
 				$fy,
 				$periodId,
 				$calculated,
-				$industryTemplateId
+				$restated,
+				$publishDate,
+				$fileDate,
+				$sourceUrl
 			);
 
 			if(!$statementId){
 
-				$message  = "Standard sheets for entity - invalid statement id ";
+				$message  = "Reported sheets for entity - invalid statement id ";
 				$message .= $statementId;
 
 				logError($message);
@@ -203,31 +224,31 @@ function insertStdSheets($db, $entityId, $replaceAllSheets){
 
 			$apiIds[$statementId] = $statementId;
 
-			if(!clearStdCalcScheme($db, $statementId))
+			if(!clearRptCalcScheme($db, $statementId))
 				return false;
 
 			if($hasCalculationScheme)
-				if(!insertStdCalcScheme($db, $statementId, $shtData[KEY_SCHEME]))
+				if(!insertRptCalcScheme($db, $statementId, $shtData[KEY_SCHEME]))
 					return false;
 
-			if(!insertStdLineItems($db, $statementId, $shtData[KEY_VALUES]))
+			if(!insertRptLineItems($db, $statementId, $shtData[KEY_VALUES]))
 				return false;
 
-			$message  = "Standard sheets for entity - ".++$sheetsInserted." ";
+			$message  = "Reported sheets for entity - ".++$sheetsInserted." ";
 			$message .= "sheets inserted for ".$entityId;
 
 			logActivity($message);
 		}
-	}
+	}	
 
-	if($replaceAllSheets && !reconcileStdStmts($db, $entityId, $apiIds)){
+	if($replaceAllSheets && !reconcileRptStmts($db, $entityId, $apiIds)){
 
-		logError("Standard sheets for entity - reconciliation failed");
+		logError("Reported sheets for entity - reconciliation failed");
 
 		return false;		
 	}
 
-	$message = "Standard sheets for entity - completed sheets for ".$entityId;
+	$message = "Reported sheets for entity - completed sheets for ".$entityId;
 
 	logActivity($message);
 
