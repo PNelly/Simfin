@@ -5,6 +5,7 @@ error_reporting(-1);
 require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
 require_once(dirname(__FILE__,2)."/db/simfinDB.php");
 require_once(dirname(__FILE__,2)."/util/logging.php");
+require_once(dirname(__FILE__,2)."/util/util.php");
 
 require_once("seedEntities.php");
 require_once("supplementEntityDetails.php");
@@ -136,5 +137,9 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 }
 
 $db->close();
+
+// create new backup //
+
+sqlDump();
 
 ?>
