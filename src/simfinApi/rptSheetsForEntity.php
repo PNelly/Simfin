@@ -10,6 +10,7 @@ error_reporting(-1);
 require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
 require_once(dirname(__FILE__,2)."/db/simfinDB.php");
 require_once(dirname(__FILE__,2)."/util/logging.php");
+require_once(dirname(__FILE__,2)."/util/util.php");
 
 function rptSheetExists(
 	$type,
@@ -49,12 +50,10 @@ function insertRptSheets($db, $entityId, $replaceAllSheets){
 
 	$url 	= $urlA.$entityId.$urlB.API_KEY;
 
-	$curl 	= curl_init($url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	$data = simfinCurl($url);
 
-	$resp 	= json_decode(curl_exec($curl), true);
-
-	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+	$httpCode = $data[0];
+	$resp 		= $data[1];
 
 	if($httpCode != HTTP_SUCCESS){
 
@@ -109,12 +108,10 @@ function insertRptSheets($db, $entityId, $replaceAllSheets){
 			$shtUrl .= $shtUrlD.$fy;
 			$shtUrl .= $shtUrlE.API_KEY;
 
-			$shtCurl = curl_init($shtUrl);
-				curl_setopt($shtCurl, CURLOPT_RETURNTRANSFER, true);
+			$data = simfinCurl($shtUrl);
 
-			$shtCurlResponse = curl_exec($shtCurl);
-
-			$httpCode = curl_getinfo($shtCurl, CURLINFO_HTTP_CODE);
+			$httpCode = $data[0];
+			$shtData 	= $data[1];
 
 			if($httpCode != HTTP_SUCCESS){
 
@@ -130,15 +127,13 @@ function insertRptSheets($db, $entityId, $replaceAllSheets){
 				} else {
 
 					$message  = "Reported sheets for entity - sheet curl failed ";
-					$message .= $httpCode.", ".$shtUrl;
+					$message .= $httpCode.", ".$shtUrl." error ".$data[2];
 
 					logError($message);
 
 					return false;
 				}
 			}
-
-			$shtData = json_decode($shtCurlResponse, true);
 
 			$periodId 				= getPeriodId($db, $pd);
 			$statementTypeId 		= getStatementTypeId($db, $type);

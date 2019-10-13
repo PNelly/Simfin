@@ -1263,7 +1263,7 @@ function getRptStmtMetaDnrmlzd($db, $simfinId){
 
 	} else {
 
-		($result->fetch_all(MYSQLI_ASSOC));
+		return ($result->fetch_all(MYSQLI_ASSOC));
 	}
 }
 

@@ -5,6 +5,7 @@ error_reporting(-1);
 require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
 require_once(dirname(__FILE__,2)."/db/simfinDB.php");
 require_once(dirname(__FILE__,2)."/util/logging.php");
+require_once(dirname(__FILE__,2)."/util/util.php");
 
 function insertSharesOutstandingForEntity($db, $entityId){
 
@@ -13,17 +14,15 @@ function insertSharesOutstandingForEntity($db, $entityId){
 
 	$url  = $urlA.$entityId.$urlB.API_KEY;
 
-	$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	$data = simfinCurl($url);
 
-	$resp = json_decode(curl_exec($curl), true);
-
-	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+	$httpCode = $data[0];
+	$resp 		= $data[1];
 
 	if($httpCode != HTTP_SUCCESS){
 
 		$message  = "shares outstanding for entity - curl failed ";
-		$message .= $httpCode.", ".$url;
+		$message .= $httpCode.", ".$url." error ".$data[2];
 
 		logError($message);
 
