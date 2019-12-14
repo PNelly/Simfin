@@ -11,6 +11,14 @@ $simfinApiCalls = 0;
 function simfinCurl($url){
 
 	global $simfinApiCalls;
+	global $simfinApiCallLimit;
+
+	if($simfinApiCalls >= $simfinApiCallLimit)
+		return array(
+			0 => 400,
+			1 => "",
+			2 => "simfin API call limit reached"
+		);
 
 	$curl = curl_init($url);
 
@@ -39,7 +47,7 @@ function sqlDump(){
 	// dump database contents into compressed backup //
 
 	if(!file_exists(SQL_DUMP_DIR) && !is_dir(SQL_DUMP_DIR)){
-		logActivity("SQL Dump - directory ".SQL_DUMP_DIR." does not exist, creating\n");
+		logActivity("SQL Dump - directory ".SQL_DUMP_DIR." does not exist, creating");
 		mkdir(SQL_DUMP_DIR);
 	}
 
@@ -48,7 +56,7 @@ function sqlDump(){
 		unlink(SQL_DUMP_DIR.SQL_DUMP_NEW);
 	}
 
-	logActivity("SQL Dump - dumping to: ".SQL_DUMP_DIR.SQL_DUMP_NEW."\n");
+	logActivity("SQL Dump - dumping to: ".SQL_DUMP_DIR.SQL_DUMP_NEW);
 
 	$cmd  = "mysqldump --user=".DB_READ_USER;
 	$cmd .= " --password=".DB_READ_PASS;

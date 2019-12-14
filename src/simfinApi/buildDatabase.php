@@ -2,8 +2,13 @@
 
 error_reporting(-1);
 
+set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__,2)."/cfg/");
+set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__,2)."/db/");
+set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__,2)."/util/");
+
+require_once(dirname(__FILE__,2)."/cfg/config.php");
 require_once(dirname(__FILE__,2)."/cfg/simfinCreds.php");
-require_once(dirname(__FILE__,2)."/db/simfinDB.php");
+require_once(dirname(__FILE__,2)."/db/simfinDb.php");
 require_once(dirname(__FILE__,2)."/util/logging.php");
 require_once(dirname(__FILE__,2)."/util/util.php");
 
@@ -15,7 +20,7 @@ require_once("pricesForEntity.php");
 require_once("sharesForEntity.php");
 
 $entitiesUpdated = 0;
-$entityLimit = 1;
+$entityLimit = 2;
 
 if(!isset($argv[1]))
 	die("no argument whether to replace data");
@@ -72,7 +77,20 @@ if(!$entityIds){
 
 // transaction for each entity's data //
 
-for($idx = 0; $idx < count($entityIds); ++$idx){
+$idx = 0;
+
+if($nextEntityToQuery >= 0){
+	$last = array_search($nextEntityToQuery, $entityIds);
+	$idx 	= ($last !== false) ? $last : 0;
+	echo("next entity to query: ".$nextEntityToQuery." found idx: ".$last."\n");
+}
+
+for(; $idx < count($entityIds); ++$idx){
+
+	if($simfinApiCalls >= $simfinApiCallLimit){
+		logError("Build database - simfin api call limit reached");
+		break;
+	}
 
 	$db->begin_transaction();
 
@@ -132,11 +150,17 @@ for($idx = 0; $idx < count($entityIds); ++$idx){
 
 	++$entitiesUpdated;
 
+	$nextEntityToQuery = $entityIds[ ($idx +1) % count($entityIds)];
+
 	if($entitiesUpdated == $entityLimit)
 		break;
 }
 
 $db->close();
+
+// update config to pick up where left off //
+
+updateConfig($nextEntityToQuery);
 
 // create new backup //
 

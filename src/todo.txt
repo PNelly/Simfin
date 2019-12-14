@@ -1,0 +1,73 @@
+
+> Backend
+
+	> Simfin API Consumer and Database
+		- Refactoring needed
+			- Database interaction PHP
+			- API Data consumption
+		X Census of entities
+		X Gathering entity details
+		X Classification into sectors and industries
+		X Shares outstanding over time
+		X Share pricing over time
+		X History of financial statements
+			X Standardized format for aggregation and comparison
+			X Original format for low level analysis
+		X Database users specific to application read and write
+
+	- Middleware to respond to requests for data
+		- Requirements determination on what users may want to see
+			- Conversations with Boydston, Wiki, Gamel
+			- Timelines of sheet values
+			- Performance distributions of companies and sectors
+
+	- Login Management
+		- Database for users and sessions
+		- Signup processing
+		- Login processing
+		- Password reset
+
+- Frontend
+	- Site workflow and necessary pages
+		- Data explorer
+		- Account settings
+		- Suggestions and Criticisms
+
+	- ChartJS can be used for data visualizations (chartjs.org)
+
+	- Login Management
+		- Signup Form
+		- Login Form
+
+- Environment
+	- Research on performant web server environments
+		- investigate apache vs nginx
+
+	- Security policy research
+
+
+- Staging and Deployment Pipeline
+	- Configure git remote on cloud server(s)
+
+- Revenue model
+	- Subscriptions and payment procesing
+	- On-site advertising for non-paying users
+	- Consideration of inexpensive mobile application
+
+- Reference Material
+	- Review software engineering thread on publishing web applications
+		https://softwareengineering.stackexchange.com/questions/46716/what-technical-details-should-a-programmer-of-a-web-application-consider-before
+	- Stripe
+		- https://stripe.com/docs
+	- Credit Card Processing
+		- https://stackoverflow.com/questions/51094/payment-processors-what-do-i-need-to-know-if-i-want-to-accept-credit-cards-on
+	- Merchant Services
+		- https://www.west-wind.com/presentations/aspnetecommerce/aspnetecommerce.html
+	- Promotion
+		- https://www.producthunt.com/
+	- Cloud linux server running php, mysql, nginx
+		- https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04
+	- C10K
+		- http://www.kegel.com/c10k.html
+	- Rate Limiting and Velocity Checking
+		- https://blog.codinghorror.com/rate-limiting-and-velocity-checking/
